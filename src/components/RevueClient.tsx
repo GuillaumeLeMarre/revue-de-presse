@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { ArticleCard } from "@/components/ArticleCard";
+import Link from "next/link";
+import { LeadArticle, RiverItem } from "@/components/ArticleCard";
 import { refreshFeed, loadMoreArticles, loadNewerArticles } from "@/lib/feed-actions";
+import { logout } from "@/lib/auth-actions";
 import type { ArticleCardData } from "@/lib/articles-query";
 
 interface Category {
@@ -10,6 +12,18 @@ interface Category {
   name: string;
   slug: string;
 }
+
+interface Section {
+  key: string;
+  label: string;
+  items: ArticleCardData[];
+}
+
+const todayLabel = new Intl.DateTimeFormat("fr-FR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+}).format(new Date());
 
 export function RevueClient({
   initialArticles,
@@ -44,8 +58,31 @@ export function RevueClient({
     [articles, selectedSlug, selectedSource]
   );
 
+  const sections = useMemo<Section[]>(() => {
+    if (selectedSlug) {
+      const label = categories.find((c) => c.slug === selectedSlug)?.name ?? "";
+      return filtered.length ? [{ key: selectedSlug, label, items: filtered }] : [];
+    }
+
+    const bySlug = new Map<string, ArticleCardData[]>();
+    for (const a of filtered) {
+      const key = a.categorySlug ?? "__none__";
+      if (!bySlug.has(key)) bySlug.set(key, []);
+      bySlug.get(key)!.push(a);
+    }
+
+    const ordered: Section[] = [];
+    for (const c of categories) {
+      const items = bySlug.get(c.slug);
+      if (items?.length) ordered.push({ key: c.slug, label: c.name, items });
+    }
+    const none = bySlug.get("__none__");
+    if (none?.length) ordered.push({ key: "__none__", label: "Autres", items: none });
+    return ordered;
+  }, [filtered, selectedSlug, categories]);
+
   function handleRefresh() {
-    setStatus("Actualisation en cours...");
+    setStatus("Actualisation en cours…");
     startRefresh(async () => {
       const result = await refreshFeed();
       setStatus(result.message);
@@ -53,8 +90,7 @@ export function RevueClient({
         const fresh = await loadNewerArticles(articles[0]?.id ?? 0);
         setArticles((prev) => {
           const existingIds = new Set(prev.map((a) => a.id));
-          const merged = [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];
-          return merged;
+          return [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];
         });
       }
     });
@@ -70,33 +106,62 @@ export function RevueClient({
     });
   }
 
+  let leadRendered = false;
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-          📰 Ma Revue de Presse
-        </h1>
-        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-          <span>{status ?? " "}</span>
+    <div className="mx-auto flex max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
+      <header className="flex flex-col gap-4 border-b border-rule pb-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="font-display text-[30px] font-medium leading-none text-ink sm:text-[34px]">
+              Ma Revue de Presse
+            </h1>
+            <p className="font-body mt-2 text-sm capitalize text-ink-soft">
+              {todayLabel}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 pt-1">
+            <Link
+              href="/settings"
+              aria-label="Paramètres"
+              className="font-body text-sm text-ink-soft hover:text-ink"
+            >
+              Réglages
+            </Link>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="font-body text-sm text-ink-soft hover:text-ink"
+              >
+                Quitter
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="font-body min-h-[1.25rem] text-sm text-ink-soft">
+            {status ?? " "}
+          </span>
           <button
             type="button"
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="rounded-md border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="font-body text-sm font-medium text-accent hover:underline disabled:opacity-50"
           >
-            {isRefreshing ? "Actualisation..." : "↻ Actualiser"}
+            {isRefreshing ? "Actualisation…" : "Actualiser"}
           </button>
         </div>
       </header>
 
-      <nav className="flex gap-2 overflow-x-auto pb-1">
-        <TabButton
+      <nav className="flex gap-5 overflow-x-auto pt-4 text-sm">
+        <NavButton
           label="Tous"
           active={selectedSlug === null}
           onClick={() => setSelectedSlug(null)}
         />
         {categories.map((c) => (
-          <TabButton
+          <NavButton
             key={c.id}
             label={c.name}
             active={selectedSlug === c.slug}
@@ -106,33 +171,54 @@ export function RevueClient({
       </nav>
 
       {sourceTags.length > 0 ? (
-        <nav className="flex gap-2 overflow-x-auto pb-1">
-          <TabButton
-            label="Toutes sources"
+        <nav className="flex gap-4 overflow-x-auto pb-1 pt-2 text-xs">
+          <NavButton
+            label="Toutes recherches"
             active={selectedSource === null}
             onClick={() => setSelectedSource(null)}
+            muted
           />
           {sourceTags.map((tag) => (
-            <TabButton
+            <NavButton
               key={tag}
               label={tag}
               active={selectedSource === tag}
               onClick={() => setSelectedSource(tag)}
+              muted
             />
           ))}
         </nav>
       ) : null}
 
-      {filtered.length === 0 ? (
-        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+      {sections.length === 0 ? (
+        <p className="font-body py-16 text-center text-sm text-ink-soft">
           Aucun article pour le moment.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
+        sections.map((section) => (
+          <section key={section.key} className="pt-8">
+            <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
+              {section.label}
+            </h2>
+            <div className="mt-3 border-t border-rule">
+              {section.items.map((article, index) => {
+                if (!leadRendered && index === 0 && !selectedSlug) {
+                  leadRendered = true;
+                  return (
+                    <div key={article.id} className="border-b border-rule py-6">
+                      <LeadArticle article={article} />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={article.id} className="border-b border-rule">
+                    <RiverItem article={article} />
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ))
       )}
 
       {hasMore ? (
@@ -140,32 +226,36 @@ export function RevueClient({
           type="button"
           onClick={handleLoadMore}
           disabled={isLoadingMore}
-          className="mx-auto mt-2 rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="font-body mx-auto mt-8 text-sm font-medium text-accent hover:underline disabled:opacity-50"
         >
-          {isLoadingMore ? "Chargement..." : "Charger plus"}
+          {isLoadingMore ? "Chargement…" : "Charger plus d'articles"}
         </button>
       ) : null}
     </div>
   );
 }
 
-function TabButton({
+function NavButton({
   label,
   active,
   onClick,
+  muted,
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
+  muted?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition ${
+      className={`font-body shrink-0 border-b-2 pb-2 transition-colors ${
+        muted ? "text-xs" : "text-sm font-medium"
+      } ${
         active
-          ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          ? "border-accent text-ink"
+          : "border-transparent text-ink-soft hover:text-ink"
       }`}
     >
       {label}

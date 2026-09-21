@@ -14,48 +14,50 @@ export default async function SettingsPage() {
   ]);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 bg-gray-50 px-4 py-6 dark:bg-gray-950">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-          >
-            ← Retour
-          </Link>
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            Paramètres
-          </h1>
-        </div>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-md border border-gray-300 px-3 py-1 text-xs text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
-          >
-            Se déconnecter
-          </button>
-        </form>
-      </header>
+    <main className="min-h-screen bg-paper">
+      <div className="mx-auto flex max-w-2xl flex-col gap-8 px-4 pb-16 pt-8 sm:px-6">
+        <header className="flex items-center justify-between border-b border-rule pb-5">
+          <div className="flex items-baseline gap-4">
+            <Link
+              href="/"
+              className="font-body text-sm text-ink-soft hover:text-ink"
+            >
+              ← Édition
+            </Link>
+            <h1 className="font-display text-2xl font-medium text-ink">
+              Réglages
+            </h1>
+          </div>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="font-body text-sm text-ink-soft hover:text-ink"
+            >
+              Quitter
+            </button>
+          </form>
+        </header>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-          Sources suivies
-        </h2>
+        <section className="flex flex-col gap-4">
+          <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
+            Sources suivies
+          </h2>
 
-        <div className="rounded-lg border border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-900">
-          {sources.length === 0 ? (
-            <p className="py-4 text-sm text-gray-500 dark:text-gray-400">
-              Aucune source pour le moment.
-            </p>
-          ) : (
-            sources.map((source) => (
-              <SourceRow key={source.id} source={source} />
-            ))
-          )}
-        </div>
+          <div className="border-t border-rule">
+            {sources.length === 0 ? (
+              <p className="font-body py-6 text-sm text-ink-soft">
+                Aucune source pour le moment.
+              </p>
+            ) : (
+              sources.map((source) => (
+                <SourceRow key={source.id} source={source} />
+              ))
+            )}
+          </div>
 
-        <SourceForm categories={categories} />
-      </section>
+          <SourceForm categories={categories} />
+        </section>
+      </div>
     </main>
   );
 }

@@ -22,23 +22,18 @@ export function SourceRow({ source }: { source: SourceRowData }) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="flex flex-col gap-1 border-b border-gray-100 py-3 last:border-0 dark:border-gray-800">
+    <div className="flex flex-col gap-1.5 border-b border-rule py-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="font-medium text-gray-900 dark:text-gray-100">
-          {source.name}
-        </span>
-        <div className="flex items-center gap-2">
+        <span className="font-display text-base text-ink">{source.name}</span>
+        <div className="font-body flex items-center gap-3 text-xs">
           <button
             type="button"
             disabled={isPending}
             onClick={() =>
               startTransition(() => toggleSource(source.id, !source.enabled))
             }
-            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-900 disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-100"
+            className="text-ink-soft hover:text-ink disabled:opacity-50"
           >
-            <span className={source.enabled ? "text-green-600" : "text-gray-400"}>
-              ●
-            </span>
             {source.enabled ? "actif" : "inactif"}
           </button>
           <button
@@ -53,7 +48,7 @@ export function SourceRow({ source }: { source: SourceRowData }) {
                 startTransition(() => deleteArticlesBySource(source.id));
               }
             }}
-            className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-100"
+            className="text-ink-soft hover:text-ink disabled:opacity-50"
           >
             Vider les articles
           </button>
@@ -65,16 +60,16 @@ export function SourceRow({ source }: { source: SourceRowData }) {
                 startTransition(() => deleteSource(source.id));
               }
             }}
-            className="text-xs text-red-500 hover:text-red-700 disabled:opacity-50"
+            className="text-accent-alert hover:underline disabled:opacity-50"
           >
             Supprimer
           </button>
         </div>
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p className="font-body text-xs text-ink-soft">
         {source.type === "google_news" ? "Google News" : "RSS"}
-        {source.categoryName ? ` • ${source.categoryName}` : ""}
-        {" • Dernière récupération : "}
+        {source.categoryName ? ` · ${source.categoryName}` : ""}
+        {" · dernière récupération : "}
         {formatDate(source.lastFetchedAt)}
       </p>
     </div>
