@@ -28,6 +28,7 @@ const todayLabel = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
   day: "numeric",
   month: "long",
+  timeZone: "Europe/Paris",
 }).format(new Date());
 
 export function RevueClient({

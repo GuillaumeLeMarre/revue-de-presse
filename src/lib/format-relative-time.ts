@@ -14,5 +14,9 @@ export function formatRelativeTime(date: Date | null): string {
   if (diffDays === 1) return "hier";
   if (diffDays < 7) return `il y a ${diffDays} j`;
 
-  return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Europe/Paris",
+  });
 }
