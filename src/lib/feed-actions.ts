@@ -1,0 +1,28 @@
+"use server";
+
+import { runCollection } from "@/lib/collect";
+import { getReadyArticles, type ArticleCardData } from "@/lib/articles-query";
+
+export interface RefreshResult {
+  message: string;
+  newArticles: number;
+}
+
+export async function refreshFeed(): Promise<RefreshResult> {
+  const result = await runCollection();
+  return {
+    newArticles: result.newArticles,
+    message:
+      result.newArticles > 0
+        ? `${result.newArticles} nouvel${result.newArticles > 1 ? "s" : ""} article${
+            result.newArticles > 1 ? "s" : ""
+          }`
+        : "Aucun nouvel article",
+  };
+}
+
+export async function loadMoreArticles(
+  beforeId: number
+): Promise<ArticleCardData[]> {
+  return getReadyArticles({ beforeId });
+}
