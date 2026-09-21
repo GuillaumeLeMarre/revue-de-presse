@@ -20,17 +20,28 @@ export function RevueClient({
 }) {
   const [articles, setArticles] = useState(initialArticles);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
   const [isLoadingMore, startLoadMore] = useTransition();
   const [hasMore, setHasMore] = useState(initialArticles.length > 0);
 
+  const sourceTags = useMemo(() => {
+    const tags = new Set<string>();
+    for (const a of articles) {
+      if (a.searchTag) tags.add(a.searchTag);
+    }
+    return Array.from(tags).sort();
+  }, [articles]);
+
   const filtered = useMemo(
     () =>
-      selectedSlug
-        ? articles.filter((a) => a.categorySlug === selectedSlug)
-        : articles,
-    [articles, selectedSlug]
+      articles.filter(
+        (a) =>
+          (selectedSlug === null || a.categorySlug === selectedSlug) &&
+          (selectedSource === null || a.searchTag === selectedSource)
+      ),
+    [articles, selectedSlug, selectedSource]
   );
 
   function handleRefresh() {
@@ -93,6 +104,24 @@ export function RevueClient({
           />
         ))}
       </nav>
+
+      {sourceTags.length > 0 ? (
+        <nav className="flex gap-2 overflow-x-auto pb-1">
+          <TabButton
+            label="Toutes sources"
+            active={selectedSource === null}
+            onClick={() => setSelectedSource(null)}
+          />
+          {sourceTags.map((tag) => (
+            <TabButton
+              key={tag}
+              label={tag}
+              active={selectedSource === tag}
+              onClick={() => setSelectedSource(tag)}
+            />
+          ))}
+        </nav>
+      ) : null}
 
       {filtered.length === 0 ? (
         <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">

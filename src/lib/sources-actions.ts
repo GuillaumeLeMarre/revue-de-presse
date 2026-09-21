@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { sources, type SourceType } from "@/db/schema";
+import { articles, sources, type SourceType } from "@/db/schema";
 
 export interface SourceFormState {
   error?: string;
@@ -64,6 +64,12 @@ export async function toggleSource(id: number, enabled: boolean): Promise<void> 
 export async function deleteSource(id: number): Promise<void> {
   await db.delete(sources).where(eq(sources.id, id));
   revalidatePath("/settings");
+}
+
+export async function deleteArticlesBySource(sourceId: number): Promise<void> {
+  await db.delete(articles).where(eq(articles.sourceId, sourceId));
+  revalidatePath("/settings");
+  revalidatePath("/");
 }
 
 function isValidUrl(value: string): boolean {

@@ -1,7 +1,11 @@
 "use client";
 
 import { useTransition } from "react";
-import { toggleSource, deleteSource } from "@/lib/sources-actions";
+import {
+  toggleSource,
+  deleteSource,
+  deleteArticlesBySource,
+} from "@/lib/sources-actions";
 import type { SourceRowData } from "@/lib/sources-query";
 
 function formatDate(date: Date | null): string {
@@ -36,6 +40,22 @@ export function SourceRow({ source }: { source: SourceRowData }) {
               ●
             </span>
             {source.enabled ? "actif" : "inactif"}
+          </button>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => {
+              if (
+                confirm(
+                  `Supprimer tous les articles collectés via "${source.name}" ?`
+                )
+              ) {
+                startTransition(() => deleteArticlesBySource(source.id));
+              }
+            }}
+            className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-100"
+          >
+            Vider les articles
           </button>
           <button
             type="button"
