@@ -42,6 +42,12 @@ npm run db:migrate
 
 Coolify permet de lancer cette commande via un "one-off command" sur le conteneur, ou depuis un poste avec accès réseau à la base.
 
+Puis, une seule fois, initialiser les catégories (§13) :
+
+```
+npm run db:seed
+```
+
 ## 5. Collecte automatique (cron)
 
 L'application n'exécute pas elle-même de cron interne. Utiliser les **Scheduled Tasks** de Coolify pour appeler l'endpoint interne toutes les heures :
