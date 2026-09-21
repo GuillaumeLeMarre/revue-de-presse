@@ -70,6 +70,9 @@ export const articles = pgTable("articles", {
     length: 20,
   }).$type<SummarySource>(),
   categoryId: integer("category_id").references(() => categories.id),
+  sourceId: integer("source_id").references(() => sources.id, {
+    onDelete: "set null",
+  }),
   imageUrl: text("image_url"),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   fetchedAt: timestamp("fetched_at", { withTimezone: true }),

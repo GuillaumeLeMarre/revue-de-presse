@@ -22,10 +22,19 @@ export function ArticleCard({ article }: { article: ArticleCardData }) {
       ) : null}
 
       <div className="flex flex-1 flex-col gap-2 p-4">
-        {article.categoryName ? (
-          <span className="w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-            {article.categoryName}
-          </span>
+        {(article.categoryName || article.searchTag) ? (
+          <div className="flex flex-wrap gap-1.5">
+            {article.categoryName ? (
+              <span className="w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                {article.categoryName}
+              </span>
+            ) : null}
+            {article.searchTag ? (
+              <span className="w-fit rounded-full border border-gray-200 px-2 py-0.5 text-xs font-medium text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                {article.searchTag}
+              </span>
+            ) : null}
+          </div>
         ) : null}
 
         <h2 className="text-base font-semibold leading-snug text-gray-900 dark:text-gray-100">

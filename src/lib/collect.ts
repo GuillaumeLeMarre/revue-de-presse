@@ -111,6 +111,7 @@ async function collectSource(
           originalUrl,
           description: item.description,
           categoryId: source.categoryId,
+          sourceId: source.id,
           imageUrl: item.imageUrl,
           publishedAt: item.publishedAt,
           status: "discovered",
