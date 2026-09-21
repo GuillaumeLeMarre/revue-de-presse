@@ -12,7 +12,9 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "argon2": "^0.45.1",
     "drizzle-orm": "^0.45.3",
+    "iron-session": "^9.0.1",
     "next": "16.3.5",
     "pg": "^8.23.0",
     "react": "19.2.8",
