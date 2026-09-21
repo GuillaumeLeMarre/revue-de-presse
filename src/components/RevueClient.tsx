@@ -3,7 +3,12 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { LeadArticle, RiverItem } from "@/components/ArticleCard";
-import { refreshFeed, loadMoreArticles, loadNewerArticles } from "@/lib/feed-actions";
+import {
+  refreshFeed,
+  loadArticlesForCategory,
+  loadMoreArticles,
+  loadNewerArticles,
+} from "@/lib/feed-actions";
 import { logout } from "@/lib/auth-actions";
 import type { ArticleCardData } from "@/lib/articles-query";
 
@@ -38,6 +43,7 @@ export function RevueClient({
   const [status, setStatus] = useState<string | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
   const [isLoadingMore, startLoadMore] = useTransition();
+  const [isSwitching, startSwitch] = useTransition();
   const [hasMore, setHasMore] = useState(initialArticles.length > 0);
 
   const sourceTags = useMemo(() => {
@@ -50,12 +56,10 @@ export function RevueClient({
 
   const filtered = useMemo(
     () =>
-      articles.filter(
-        (a) =>
-          (selectedSlug === null || a.categorySlug === selectedSlug) &&
-          (selectedSource === null || a.searchTag === selectedSource)
-      ),
-    [articles, selectedSlug, selectedSource]
+      selectedSource === null
+        ? articles
+        : articles.filter((a) => a.searchTag === selectedSource),
+    [articles, selectedSource]
   );
 
   const sections = useMemo<Section[]>(() => {
@@ -81,13 +85,24 @@ export function RevueClient({
     return ordered;
   }, [filtered, selectedSlug, categories]);
 
+  function handleSelectCategory(slug: string | null) {
+    if (slug === selectedSlug) return;
+    setSelectedSlug(slug);
+    setSelectedSource(null);
+    startSwitch(async () => {
+      const fresh = await loadArticlesForCategory(slug);
+      setArticles(fresh);
+      setHasMore(fresh.length > 0);
+    });
+  }
+
   function handleRefresh() {
     setStatus("Actualisation en cours…");
     startRefresh(async () => {
       const result = await refreshFeed();
       setStatus(result.message);
       if (result.newArticles > 0) {
-        const fresh = await loadNewerArticles(articles[0]?.id ?? 0);
+        const fresh = await loadNewerArticles(articles[0]?.id ?? 0, selectedSlug);
         setArticles((prev) => {
           const existingIds = new Set(prev.map((a) => a.id));
           return [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];
@@ -100,7 +115,7 @@ export function RevueClient({
     const lastId = articles.at(-1)?.id;
     if (!lastId) return;
     startLoadMore(async () => {
-      const more = await loadMoreArticles(lastId);
+      const more = await loadMoreArticles(lastId, selectedSlug);
       setArticles((prev) => [...prev, ...more]);
       if (more.length === 0) setHasMore(false);
     });
@@ -158,14 +173,14 @@ export function RevueClient({
         <NavButton
           label="Tous"
           active={selectedSlug === null}
-          onClick={() => setSelectedSlug(null)}
+          onClick={() => handleSelectCategory(null)}
         />
         {categories.map((c) => (
           <NavButton
             key={c.id}
             label={c.name}
             active={selectedSlug === c.slug}
-            onClick={() => setSelectedSlug(c.slug)}
+            onClick={() => handleSelectCategory(c.slug)}
           />
         ))}
       </nav>
@@ -190,7 +205,11 @@ export function RevueClient({
         </nav>
       ) : null}
 
-      {sections.length === 0 ? (
+      {isSwitching ? (
+        <p className="font-body py-16 text-center text-sm text-ink-soft">
+          Chargement…
+        </p>
+      ) : sections.length === 0 ? (
         <p className="font-body py-16 text-center text-sm text-ink-soft">
           Aucun article pour le moment.
         </p>
@@ -221,7 +240,7 @@ export function RevueClient({
         ))
       )}
 
-      {hasMore ? (
+      {hasMore && !isSwitching ? (
         <button
           type="button"
           onClick={handleLoadMore}

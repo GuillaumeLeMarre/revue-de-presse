@@ -25,14 +25,22 @@ export async function refreshFeed(): Promise<RefreshResult> {
   };
 }
 
-export async function loadMoreArticles(
-  beforeId: number
+export async function loadArticlesForCategory(
+  categorySlug: string | null
 ): Promise<ArticleCardData[]> {
-  return getReadyArticles({ beforeId });
+  return getReadyArticles({ categorySlug: categorySlug ?? undefined });
+}
+
+export async function loadMoreArticles(
+  beforeId: number,
+  categorySlug: string | null
+): Promise<ArticleCardData[]> {
+  return getReadyArticles({ beforeId, categorySlug: categorySlug ?? undefined });
 }
 
 export async function loadNewerArticles(
-  afterId: number
+  afterId: number,
+  categorySlug: string | null
 ): Promise<ArticleCardData[]> {
-  return getNewerReadyArticles(afterId);
+  return getNewerReadyArticles(afterId, categorySlug ?? undefined);
 }

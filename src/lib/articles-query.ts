@@ -1,4 +1,4 @@
-import { desc, eq, and, lt, gt } from "drizzle-orm";
+import { desc, eq, and, lt, gt, type SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { articles, categories, sources } from "@/db/schema";
 
@@ -44,31 +44,36 @@ export async function getCategories() {
 export async function getReadyArticles(options: {
   beforeId?: number;
   limit?: number;
+  categorySlug?: string;
 } = {}): Promise<ArticleCardData[]> {
   const limit = options.limit ?? PAGE_SIZE;
+
+  const conditions: SQL[] = [eq(articles.status, "ready")];
+  if (options.beforeId) conditions.push(lt(articles.id, options.beforeId));
+  if (options.categorySlug) conditions.push(eq(categories.slug, options.categorySlug));
 
   return db
     .select(articleCardSelect)
     .from(articles)
     .leftJoin(categories, eq(articles.categoryId, categories.id))
     .leftJoin(sources, eq(articles.sourceId, sources.id))
-    .where(
-      options.beforeId
-        ? and(eq(articles.status, "ready"), lt(articles.id, options.beforeId))
-        : eq(articles.status, "ready")
-    )
+    .where(and(...conditions))
     .orderBy(desc(articles.id))
     .limit(limit);
 }
 
 export async function getNewerReadyArticles(
-  afterId: number
+  afterId: number,
+  categorySlug?: string
 ): Promise<ArticleCardData[]> {
+  const conditions: SQL[] = [eq(articles.status, "ready"), gt(articles.id, afterId)];
+  if (categorySlug) conditions.push(eq(categories.slug, categorySlug));
+
   return db
     .select(articleCardSelect)
     .from(articles)
     .leftJoin(categories, eq(articles.categoryId, categories.id))
     .leftJoin(sources, eq(articles.sourceId, sources.id))
-    .where(and(eq(articles.status, "ready"), gt(articles.id, afterId)))
+    .where(and(...conditions))
     .orderBy(desc(articles.id));
 }
