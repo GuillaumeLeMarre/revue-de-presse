@@ -5,6 +5,8 @@ import { buildGoogleNewsRssUrl } from "@/lib/google-news";
 import { fetchRssItems } from "@/lib/rss-collector";
 import { resolveOriginalUrl } from "@/lib/original-url";
 import { findExistingArticleId, hashTitle } from "@/lib/dedup";
+import { processArticle } from "@/lib/process-article";
+import { logEvent } from "@/lib/logger";
 
 export interface CollectResult {
   newArticles: number;
@@ -62,7 +64,18 @@ async function collectSource(
     throw new Error("Source has no RSS URL configured");
   }
 
-  const items = await fetchRssItems(rssUrl);
+  let items;
+  try {
+    items = await fetchRssItems(rssUrl);
+    logEvent("RSS_FETCH_SUCCESS", { sourceId: source.id, count: items.length });
+  } catch (error) {
+    logEvent("RSS_FETCH_FAILED", {
+      sourceId: source.id,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
+  }
+
   let inserted = 0;
 
   for (const item of items) {
@@ -72,7 +85,10 @@ async function collectSource(
       feedUrl: item.feedUrl,
       title: item.title,
     });
-    if (existingId) continue;
+    if (existingId) {
+      logEvent("ARTICLE_DUPLICATE", { sourceId: source.id, title: item.title });
+      continue;
+    }
 
     const originalUrl = await resolveOriginalUrl(item.feedUrl);
 
@@ -84,19 +100,33 @@ async function collectSource(
       if (dupByOriginal) continue;
     }
 
-    await db.insert(articles).values({
-      title: item.title,
-      source: item.sourceName ?? source.name,
-      feedUrl: item.feedUrl,
-      originalUrl,
-      description: item.description,
-      categoryId: source.categoryId,
-      imageUrl: item.imageUrl,
-      publishedAt: item.publishedAt,
-      status: "discovered",
-      contentHash: hashTitle(item.title),
-    });
+    const [inserted_] = await db
+      .insert(articles)
+      .values({
+        title: item.title,
+        source: item.sourceName ?? source.name,
+        feedUrl: item.feedUrl,
+        originalUrl,
+        description: item.description,
+        categoryId: source.categoryId,
+        imageUrl: item.imageUrl,
+        publishedAt: item.publishedAt,
+        status: "discovered",
+        contentHash: hashTitle(item.title),
+      })
+      .returning({ id: articles.id });
+
+    logEvent("ARTICLE_DISCOVERED", { articleId: inserted_.id, title: item.title });
     inserted += 1;
+
+    try {
+      await processArticle(inserted_.id);
+    } catch (error) {
+      logEvent("ARTICLE_FETCH_FAILED", {
+        articleId: inserted_.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   await db
