@@ -1,4 +1,4 @@
-import { desc, eq, and, lt } from "drizzle-orm";
+import { desc, eq, and, lt, gt } from "drizzle-orm";
 import { db } from "@/db";
 import { articles, categories } from "@/db/schema";
 
@@ -56,4 +56,27 @@ export async function getReadyArticles(options: {
     .limit(limit);
 
   return rows;
+}
+
+export async function getNewerReadyArticles(
+  afterId: number
+): Promise<ArticleCardData[]> {
+  return db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      source: articles.source,
+      originalUrl: articles.originalUrl,
+      feedUrl: articles.feedUrl,
+      summary: articles.summary,
+      summarySource: articles.summarySource,
+      imageUrl: articles.imageUrl,
+      publishedAt: articles.publishedAt,
+      categoryName: categories.name,
+      categorySlug: categories.slug,
+    })
+    .from(articles)
+    .leftJoin(categories, eq(articles.categoryId, categories.id))
+    .where(and(eq(articles.status, "ready"), gt(articles.id, afterId)))
+    .orderBy(desc(articles.id));
 }

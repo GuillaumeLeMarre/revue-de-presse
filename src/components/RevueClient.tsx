@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { ArticleCard } from "@/components/ArticleCard";
-import { refreshFeed, loadMoreArticles } from "@/lib/feed-actions";
+import { refreshFeed, loadMoreArticles, loadNewerArticles } from "@/lib/feed-actions";
 import type { ArticleCardData } from "@/lib/articles-query";
 
 interface Category {
@@ -39,9 +39,7 @@ export function RevueClient({
       const result = await refreshFeed();
       setStatus(result.message);
       if (result.newArticles > 0) {
-        const fresh = await loadMoreArticles(
-          articles[0]?.id ? articles[0].id + 1 : Number.MAX_SAFE_INTEGER
-        );
+        const fresh = await loadNewerArticles(articles[0]?.id ?? 0);
         setArticles((prev) => {
           const existingIds = new Set(prev.map((a) => a.id));
           const merged = [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];

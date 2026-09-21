@@ -100,30 +100,46 @@ async function collectSource(
       if (dupByOriginal) continue;
     }
 
-    const [inserted_] = await db
-      .insert(articles)
-      .values({
+    let insertedRow;
+    try {
+      [insertedRow] = await db
+        .insert(articles)
+        .values({
+          title: item.title,
+          source: item.sourceName ?? source.name,
+          feedUrl: item.feedUrl,
+          originalUrl,
+          description: item.description,
+          categoryId: source.categoryId,
+          imageUrl: item.imageUrl,
+          publishedAt: item.publishedAt,
+          status: "discovered",
+          contentHash: hashTitle(item.title),
+        })
+        .onConflictDoNothing({ target: articles.contentHash })
+        .returning({ id: articles.id });
+    } catch (error) {
+      logEvent("ARTICLE_FETCH_FAILED", {
+        sourceId: source.id,
         title: item.title,
-        source: item.sourceName ?? source.name,
-        feedUrl: item.feedUrl,
-        originalUrl,
-        description: item.description,
-        categoryId: source.categoryId,
-        imageUrl: item.imageUrl,
-        publishedAt: item.publishedAt,
-        status: "discovered",
-        contentHash: hashTitle(item.title),
-      })
-      .returning({ id: articles.id });
+        error: error instanceof Error ? error.message : String(error),
+      });
+      continue;
+    }
 
-    logEvent("ARTICLE_DISCOVERED", { articleId: inserted_.id, title: item.title });
+    if (!insertedRow) {
+      logEvent("ARTICLE_DUPLICATE", { sourceId: source.id, title: item.title });
+      continue;
+    }
+
+    logEvent("ARTICLE_DISCOVERED", { articleId: insertedRow.id, title: item.title });
     inserted += 1;
 
     try {
-      await processArticle(inserted_.id);
+      await processArticle(insertedRow.id);
     } catch (error) {
       logEvent("ARTICLE_FETCH_FAILED", {
-        articleId: inserted_.id,
+        articleId: insertedRow.id,
         error: error instanceof Error ? error.message : String(error),
       });
     }

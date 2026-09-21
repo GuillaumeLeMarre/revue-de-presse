@@ -1,7 +1,11 @@
 "use server";
 
 import { runCollection } from "@/lib/collect";
-import { getReadyArticles, type ArticleCardData } from "@/lib/articles-query";
+import {
+  getReadyArticles,
+  getNewerReadyArticles,
+  type ArticleCardData,
+} from "@/lib/articles-query";
 
 export interface RefreshResult {
   message: string;
@@ -25,4 +29,10 @@ export async function loadMoreArticles(
   beforeId: number
 ): Promise<ArticleCardData[]> {
   return getReadyArticles({ beforeId });
+}
+
+export async function loadNewerArticles(
+  afterId: number
+): Promise<ArticleCardData[]> {
+  return getNewerReadyArticles(afterId);
 }
