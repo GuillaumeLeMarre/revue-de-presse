@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getCategories, getReadyArticles } from "@/lib/articles-query";
 import { RevueClient } from "@/components/RevueClient";
 import { logout } from "@/lib/auth-actions";
@@ -12,7 +13,14 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <div className="mx-auto flex max-w-5xl justify-end px-4 pt-4">
+      <div className="mx-auto flex max-w-5xl items-center justify-end gap-2 px-4 pt-4">
+        <Link
+          href="/settings"
+          aria-label="Paramètres"
+          className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+        >
+          ⚙️
+        </Link>
         <form action={logout}>
           <button
             type="submit"
