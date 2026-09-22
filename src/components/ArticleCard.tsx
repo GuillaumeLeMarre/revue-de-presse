@@ -1,28 +1,18 @@
 import type { ArticleCardData } from "@/lib/articles-query";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { categoryColor } from "@/lib/category-colors";
 
-function Meta({ article }: { article: ArticleCardData }) {
-  return (
-    <p className="font-body text-[13px] text-ink-soft">
-      {[article.source, formatRelativeTime(article.publishedAt)]
-        .filter(Boolean)
-        .join(" · ")}
-      {article.searchTag ? (
-        <span className="text-ink-soft"> · {article.searchTag}</span>
-      ) : null}
-    </p>
-  );
-}
-
-export function LeadArticle({ article }: { article: ArticleCardData }) {
+export function ArticleCard({ article }: { article: ArticleCardData }) {
   const href = article.originalUrl ?? article.feedUrl ?? "#";
+  const color = categoryColor(article.categorySlug);
 
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col gap-3 sm:flex-row sm:gap-5"
+      style={{ borderLeftColor: color }}
+      className="group mb-4 block break-inside-avoid overflow-hidden rounded-tl-2xl rounded-tr-2xl rounded-br-md rounded-bl-md border-l-[3px] bg-card shadow-none transition-shadow duration-200 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.18)]"
     >
       {article.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -30,58 +20,48 @@ export function LeadArticle({ article }: { article: ArticleCardData }) {
           src={article.imageUrl}
           alt=""
           loading="lazy"
-          className="h-48 w-full shrink-0 object-cover sm:h-40 sm:w-56"
+          className="w-full object-cover"
         />
       ) : null}
-      <div className="flex flex-1 flex-col gap-2">
-        <h2 className="font-display text-[26px] font-medium leading-[1.15] text-ink group-hover:text-accent sm:text-[28px]">
+
+      <div className="flex flex-col gap-2 p-4">
+        {article.categoryName ? (
+          <span
+            style={{ color }}
+            className="font-body flex items-center gap-1.5 text-xs font-medium"
+          >
+            <span
+              style={{ backgroundColor: color }}
+              className="h-1.5 w-1.5 rounded-full"
+            />
+            {article.categoryName}
+          </span>
+        ) : null}
+
+        <h2 className="font-display text-lg font-medium leading-snug text-ink group-hover:text-accent">
           {article.title}
         </h2>
+
         {article.summary ? (
-          <p className="font-body text-[15px] leading-relaxed text-ink-soft">
+          <p className="font-body line-clamp-3 text-sm leading-relaxed text-ink-soft">
             {article.summary}
           </p>
         ) : null}
+
         {article.summarySource === "rss_excerpt" ? (
           <p className="font-body text-xs italic text-ink-soft/70">
             Résumé basé sur l&apos;extrait disponible
           </p>
         ) : null}
-        <Meta article={article} />
-      </div>
-    </a>
-  );
-}
 
-export function RiverItem({ article }: { article: ArticleCardData }) {
-  const href = article.originalUrl ?? article.feedUrl ?? "#";
-
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex gap-4 py-4"
-    >
-      {article.imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={article.imageUrl}
-          alt=""
-          loading="lazy"
-          className="h-16 w-16 shrink-0 object-cover sm:h-20 sm:w-20"
-        />
-      ) : null}
-      <div className="flex flex-1 flex-col gap-1.5">
-        <h3 className="font-display text-lg font-medium leading-snug text-ink group-hover:text-accent">
-          {article.title}
-        </h3>
-        {article.summary ? (
-          <p className="font-body line-clamp-2 text-sm leading-relaxed text-ink-soft">
-            {article.summary}
-          </p>
-        ) : null}
-        <Meta article={article} />
+        <p className="font-body text-[13px] text-ink-soft">
+          {[article.source, formatRelativeTime(article.publishedAt)]
+            .filter(Boolean)
+            .join(" · ")}
+          {article.searchTag ? (
+            <span className="text-ink-soft"> · {article.searchTag}</span>
+          ) : null}
+        </p>
       </div>
     </a>
   );

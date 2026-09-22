@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { LeadArticle, RiverItem } from "@/components/ArticleCard";
+import { ArticleCard } from "@/components/ArticleCard";
 import {
   refreshFeed,
   loadArticlesForCategory,
@@ -122,10 +122,8 @@ export function RevueClient({
     });
   }
 
-  let leadRendered = false;
-
   return (
-    <div className="mx-auto flex max-w-2xl flex-col px-4 pb-16 pt-8 sm:px-6">
+    <div className="mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-8 sm:px-6">
       <header className="flex flex-col gap-4 border-b border-rule pb-5">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -220,22 +218,10 @@ export function RevueClient({
             <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
               {section.label}
             </h2>
-            <div className="mt-3 border-t border-rule">
-              {section.items.map((article, index) => {
-                if (!leadRendered && index === 0 && !selectedSlug) {
-                  leadRendered = true;
-                  return (
-                    <div key={article.id} className="border-b border-rule py-6">
-                      <LeadArticle article={article} />
-                    </div>
-                  );
-                }
-                return (
-                  <div key={article.id} className="border-b border-rule">
-                    <RiverItem article={article} />
-                  </div>
-                );
-              })}
+            <div className="mt-4 columns-1 gap-4 sm:columns-2 lg:columns-3">
+              {section.items.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
             </div>
           </section>
         ))
