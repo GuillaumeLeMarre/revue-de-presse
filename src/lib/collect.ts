@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { db } from "@/db";
-import { articles, sources } from "@/db/schema";
+import { articles, categories } from "@/db/schema";
 import { buildGoogleNewsRssUrl } from "@/lib/google-news";
 import { fetchRssItems } from "@/lib/rss-collector";
 import { resolveOriginalUrl } from "@/lib/original-url";
@@ -23,20 +23,20 @@ export async function runCollection(): Promise<CollectResult> {
   collectionInProgress = true;
 
   try {
-    const activeSources = await db.query.sources.findMany({
-      where: eq(sources.enabled, true),
+    const activeCategories = await db.query.categories.findMany({
+      where: and(eq(categories.enabled, true), isNotNull(categories.type)),
     });
 
     let newArticles = 0;
     const errors: CollectResult["errors"] = [];
 
-    for (const source of activeSources) {
+    for (const category of activeCategories) {
       try {
-        newArticles += await collectSource(source);
+        newArticles += await collectCategory(category);
       } catch (error) {
         errors.push({
-          sourceId: source.id,
-          sourceName: source.name,
+          sourceId: category.id,
+          sourceName: category.name,
           message: error instanceof Error ? error.message : String(error),
         });
       }
@@ -44,7 +44,7 @@ export async function runCollection(): Promise<CollectResult> {
 
     return {
       newArticles,
-      sourcesProcessed: activeSources.length,
+      sourcesProcessed: activeCategories.length,
       errors,
     };
   } finally {
@@ -52,25 +52,25 @@ export async function runCollection(): Promise<CollectResult> {
   }
 }
 
-async function collectSource(
-  source: typeof sources.$inferSelect
+async function collectCategory(
+  category: typeof categories.$inferSelect
 ): Promise<number> {
   const rssUrl =
-    source.type === "google_news"
-      ? buildGoogleNewsRssUrl(source.query ?? "", source.language, source.country)
-      : source.rssUrl;
+    category.type === "google_news"
+      ? buildGoogleNewsRssUrl(category.query ?? "", category.language, category.country)
+      : category.rssUrl;
 
   if (!rssUrl) {
-    throw new Error("Source has no RSS URL configured");
+    throw new Error("Category has no RSS URL configured");
   }
 
   let items;
   try {
     items = await fetchRssItems(rssUrl);
-    logEvent("RSS_FETCH_SUCCESS", { sourceId: source.id, count: items.length });
+    logEvent("RSS_FETCH_SUCCESS", { sourceId: category.id, count: items.length });
   } catch (error) {
     logEvent("RSS_FETCH_FAILED", {
-      sourceId: source.id,
+      sourceId: category.id,
       error: error instanceof Error ? error.message : String(error),
     });
     throw error;
@@ -86,7 +86,7 @@ async function collectSource(
       title: item.title,
     });
     if (existingId) {
-      logEvent("ARTICLE_DUPLICATE", { sourceId: source.id, title: item.title });
+      logEvent("ARTICLE_DUPLICATE", { sourceId: category.id, title: item.title });
       continue;
     }
 
@@ -106,12 +106,11 @@ async function collectSource(
         .insert(articles)
         .values({
           title: item.title,
-          source: item.sourceName ?? source.name,
+          source: item.sourceName ?? category.name,
           feedUrl: item.feedUrl,
           originalUrl,
           description: item.description,
-          categoryId: source.categoryId,
-          sourceId: source.id,
+          categoryId: category.id,
           imageUrl: item.imageUrl,
           publishedAt: item.publishedAt,
           status: "discovered",
@@ -121,7 +120,7 @@ async function collectSource(
         .returning({ id: articles.id });
     } catch (error) {
       logEvent("ARTICLE_FETCH_FAILED", {
-        sourceId: source.id,
+        sourceId: category.id,
         title: item.title,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -129,7 +128,7 @@ async function collectSource(
     }
 
     if (!insertedRow) {
-      logEvent("ARTICLE_DUPLICATE", { sourceId: source.id, title: item.title });
+      logEvent("ARTICLE_DUPLICATE", { sourceId: category.id, title: item.title });
       continue;
     }
 
@@ -147,9 +146,9 @@ async function collectSource(
   }
 
   await db
-    .update(sources)
+    .update(categories)
     .set({ lastFetchedAt: new Date(), updatedAt: new Date() })
-    .where(eq(sources.id, source.id));
+    .where(eq(categories.id, category.id));
 
   return inserted;
 }

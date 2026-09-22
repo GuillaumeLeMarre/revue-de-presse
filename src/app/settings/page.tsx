@@ -1,17 +1,15 @@
 import Link from "next/link";
-import { getCategories, getSubcategories } from "@/lib/articles-query";
-import { getSources } from "@/lib/sources-query";
-import { SourceForm } from "@/components/SourceForm";
-import { SourceRow } from "@/components/SourceRow";
+import { getCategoriesFull, getSubcategories } from "@/lib/articles-query";
+import { CategoryForm } from "@/components/CategoryForm";
+import { CategoryRow } from "@/components/CategoryRow";
 import { SubcategoryManager } from "@/components/SubcategoryManager";
 import { logout } from "@/lib/auth-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const [categories, sources, subcategories] = await Promise.all([
-    getCategories(),
-    getSources(),
+  const [categories, subcategories] = await Promise.all([
+    getCategoriesFull(),
     getSubcategories(),
   ]);
 
@@ -42,22 +40,22 @@ export default async function SettingsPage() {
 
         <section className="flex flex-col gap-4">
           <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
-            Sources suivies
+            Catégories
           </h2>
 
           <div className="border-t border-rule">
-            {sources.length === 0 ? (
+            {categories.length === 0 ? (
               <p className="font-body py-6 text-sm text-ink-soft">
-                Aucune source pour le moment.
+                Aucune catégorie pour le moment.
               </p>
             ) : (
-              sources.map((source) => (
-                <SourceRow key={source.id} source={source} />
+              categories.map((category) => (
+                <CategoryRow key={category.id} category={category} />
               ))
             )}
           </div>
 
-          <SourceForm categories={categories} />
+          <CategoryForm />
         </section>
 
         <SubcategoryManager categories={categories} subcategories={subcategories} />

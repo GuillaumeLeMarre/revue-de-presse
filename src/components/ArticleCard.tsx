@@ -59,9 +59,6 @@ export function ArticleCard({ article }: { article: ArticleCardData }) {
           {[article.source, formatRelativeTime(article.publishedAt)]
             .filter(Boolean)
             .join(" · ")}
-          {article.searchTag ? (
-            <span className="text-ink-soft"> · {article.searchTag}</span>
-          ) : null}
         </p>
       </div>
     </a>

@@ -3,31 +3,35 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { articles, sources, type SourceType } from "@/db/schema";
+import { articles, categories, type SourceType } from "@/db/schema";
 
-export interface SourceFormState {
+export interface CategoryFormState {
   error?: string;
 }
 
-export async function createSource(
-  _prevState: SourceFormState,
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export async function createCategory(
+  _prevState: CategoryFormState,
   formData: FormData
-): Promise<SourceFormState> {
+): Promise<CategoryFormState> {
   const type = formData.get("type");
   const name = formData.get("name");
   const query = formData.get("query");
   const rssUrl = formData.get("rssUrl");
-  const categoryIdRaw = formData.get("categoryId");
 
   if (type !== "google_news" && type !== "rss") {
-    return { error: "Type de source invalide." };
+    return { error: "Type de catégorie invalide." };
   }
   if (typeof name !== "string" || name.trim().length === 0) {
     return { error: "Le nom est requis." };
-  }
-  const categoryId = Number(categoryIdRaw);
-  if (!categoryId || Number.isNaN(categoryId)) {
-    return { error: "La catégorie est requise." };
   }
 
   if (type === "google_news") {
@@ -40,34 +44,37 @@ export async function createSource(
     }
   }
 
-  await db.insert(sources).values({
+  await db.insert(categories).values({
     name: name.trim(),
+    slug: slugify(name),
     type: type as SourceType,
     query: type === "google_news" ? (query as string).trim() : null,
     rssUrl: type === "rss" ? (rssUrl as string).trim() : null,
-    categoryId,
     enabled: true,
   });
 
   revalidatePath("/settings");
+  revalidatePath("/");
   return {};
 }
 
-export async function toggleSource(id: number, enabled: boolean): Promise<void> {
+export async function toggleCategory(id: number, enabled: boolean): Promise<void> {
   await db
-    .update(sources)
+    .update(categories)
     .set({ enabled, updatedAt: new Date() })
-    .where(eq(sources.id, id));
+    .where(eq(categories.id, id));
   revalidatePath("/settings");
+  revalidatePath("/");
 }
 
-export async function deleteSource(id: number): Promise<void> {
-  await db.delete(sources).where(eq(sources.id, id));
+export async function deleteCategory(id: number): Promise<void> {
+  await db.delete(categories).where(eq(categories.id, id));
   revalidatePath("/settings");
+  revalidatePath("/");
 }
 
-export async function deleteArticlesBySource(sourceId: number): Promise<void> {
-  await db.delete(articles).where(eq(articles.sourceId, sourceId));
+export async function deleteArticlesByCategory(categoryId: number): Promise<void> {
+  await db.delete(articles).where(eq(articles.categoryId, categoryId));
   revalidatePath("/settings");
   revalidatePath("/");
 }

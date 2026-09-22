@@ -1,17 +1,13 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { createSource, type SourceFormState } from "@/lib/sources-actions";
+import { createCategory, type CategoryFormState } from "@/lib/categories-actions";
 
-const initialState: SourceFormState = {};
+const initialState: CategoryFormState = {};
 
-export function SourceForm({
-  categories,
-}: {
-  categories: Array<{ id: number; name: string }>;
-}) {
+export function CategoryForm() {
   const [state, formAction, pending] = useActionState(
-    createSource,
+    createCategory,
     initialState
   );
   const [type, setType] = useState<"google_news" | "rss">("google_news");
@@ -76,24 +72,6 @@ export function SourceForm({
         </div>
       )}
 
-      <div>
-        <label className="font-body block text-sm text-ink-soft">
-          Catégorie
-        </label>
-        <select
-          name="categoryId"
-          required
-          className="font-body mt-1 w-full border-b border-rule bg-transparent pb-1.5 text-sm text-ink outline-none focus:border-accent"
-        >
-          <option value="">Sélectionner…</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {state.error ? (
         <p className="font-body text-sm text-accent-alert">{state.error}</p>
       ) : null}
@@ -103,7 +81,7 @@ export function SourceForm({
         disabled={pending}
         className="font-body w-fit border border-ink px-4 py-2 text-sm font-medium text-ink transition hover:bg-ink hover:text-paper disabled:opacity-50"
       >
-        {pending ? "Ajout…" : "Ajouter la source"}
+        {pending ? "Ajout…" : "Ajouter la catégorie"}
       </button>
     </form>
   );

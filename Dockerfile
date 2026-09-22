@@ -38,4 +38,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "node scripts/migrate.mjs && node scripts/seed.mjs && node scripts/backfill-source-tag.mjs && node server.js"]
+CMD ["sh", "-c", "node scripts/migrate.mjs && node scripts/seed.mjs && node server.js"]

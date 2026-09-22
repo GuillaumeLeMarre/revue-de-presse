@@ -8,12 +8,21 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
+export const sourceTypeValues = ["google_news", "rss"] as const;
+export type SourceType = (typeof sourceTypeValues)[number];
+
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
   sortOrder: integer("sort_order").notNull().default(0),
   enabled: boolean("enabled").notNull().default(true),
+  type: varchar("type", { length: 20 }).$type<SourceType>(),
+  query: text("query"),
+  rssUrl: text("rss_url"),
+  language: varchar("language", { length: 10 }).notNull().default("fr"),
+  country: varchar("country", { length: 10 }).notNull().default("FR"),
+  lastFetchedAt: timestamp("last_fetched_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -32,28 +41,6 @@ export const subcategories = pgTable("subcategories", {
   description: text("description").notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
   enabled: boolean("enabled").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
-
-export const sourceTypeValues = ["google_news", "rss"] as const;
-export type SourceType = (typeof sourceTypeValues)[number];
-
-export const sources = pgTable("sources", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 200 }).notNull(),
-  type: varchar("type", { length: 20 }).notNull().$type<SourceType>(),
-  query: text("query"),
-  rssUrl: text("rss_url"),
-  categoryId: integer("category_id").references(() => categories.id),
-  language: varchar("language", { length: 10 }).notNull().default("fr"),
-  country: varchar("country", { length: 10 }).notNull().default("FR"),
-  enabled: boolean("enabled").notNull().default(true),
-  lastFetchedAt: timestamp("last_fetched_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -90,9 +77,6 @@ export const articles = pgTable("articles", {
   }).$type<SummarySource>(),
   categoryId: integer("category_id").references(() => categories.id),
   subcategoryId: integer("subcategory_id").references(() => subcategories.id, {
-    onDelete: "set null",
-  }),
-  sourceId: integer("source_id").references(() => sources.id, {
     onDelete: "set null",
   }),
   imageUrl: text("image_url"),

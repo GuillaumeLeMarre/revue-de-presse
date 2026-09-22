@@ -1,6 +1,6 @@
 import { desc, eq, and, lt, gt, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { articles, categories, sources, subcategories } from "@/db/schema";
+import { articles, categories, subcategories } from "@/db/schema";
 
 const PAGE_SIZE = 20;
 
@@ -18,7 +18,6 @@ export interface ArticleCardData {
   categorySlug: string | null;
   subcategoryName: string | null;
   subcategorySlug: string | null;
-  searchTag: string | null;
 }
 
 const articleCardSelect = {
@@ -35,13 +34,18 @@ const articleCardSelect = {
   categorySlug: categories.slug,
   subcategoryName: subcategories.name,
   subcategorySlug: subcategories.slug,
-  searchTag: sources.name,
 };
 
 export async function getCategories() {
   return db.query.categories.findMany({
     where: eq(categories.enabled, true),
     orderBy: (c) => c.sortOrder,
+  });
+}
+
+export async function getCategoriesFull() {
+  return db.query.categories.findMany({
+    orderBy: (c, { desc }) => desc(c.createdAt),
   });
 }
 
@@ -59,8 +63,7 @@ function baseQuery() {
     .select(articleCardSelect)
     .from(articles)
     .leftJoin(categories, eq(articles.categoryId, categories.id))
-    .leftJoin(subcategories, eq(articles.subcategoryId, subcategories.id))
-    .leftJoin(sources, eq(articles.sourceId, sources.id));
+    .leftJoin(subcategories, eq(articles.subcategoryId, subcategories.id));
 }
 
 export async function getReadyArticles(options: {

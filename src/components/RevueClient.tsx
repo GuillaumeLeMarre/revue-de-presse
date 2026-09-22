@@ -50,37 +50,22 @@ export function RevueClient({
   const [articles, setArticles] = useState(initialArticles);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [selectedSubSlug, setSelectedSubSlug] = useState<string | null>(null);
-  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
   const [isLoadingMore, startLoadMore] = useTransition();
   const [isSwitching, startSwitch] = useTransition();
   const [hasMore, setHasMore] = useState(initialArticles.length > 0);
 
-  const sourceTags = useMemo(() => {
-    const tags = new Set<string>();
-    for (const a of articles) {
-      if (a.searchTag) tags.add(a.searchTag);
-    }
-    return Array.from(tags).sort();
-  }, [articles]);
-
-  const filtered = useMemo(
-    () =>
-      selectedSource === null
-        ? articles
-        : articles.filter((a) => a.searchTag === selectedSource),
-    [articles, selectedSource]
-  );
-
   const sections = useMemo<Section[]>(() => {
     if (selectedSlug) {
       const label = categories.find((c) => c.slug === selectedSlug)?.name ?? "";
-      return filtered.length ? [{ key: selectedSlug, label, items: filtered }] : [];
+      return articles.length
+        ? [{ key: selectedSlug, label, items: articles }]
+        : [];
     }
 
     const bySlug = new Map<string, ArticleCardData[]>();
-    for (const a of filtered) {
+    for (const a of articles) {
       const key = a.categorySlug ?? "__none__";
       if (!bySlug.has(key)) bySlug.set(key, []);
       bySlug.get(key)!.push(a);
@@ -94,13 +79,12 @@ export function RevueClient({
     const none = bySlug.get("__none__");
     if (none?.length) ordered.push({ key: "__none__", label: "Autres", items: none });
     return ordered;
-  }, [filtered, selectedSlug, categories]);
+  }, [articles, selectedSlug, categories]);
 
   function handleSelectCategory(slug: string | null) {
     if (slug === selectedSlug) return;
     setSelectedSlug(slug);
     setSelectedSubSlug(null);
-    setSelectedSource(null);
     startSwitch(async () => {
       const fresh = await loadArticlesForCategory(slug, null);
       setArticles(fresh);
@@ -228,26 +212,6 @@ export function RevueClient({
               label={s.name}
               active={selectedSubSlug === s.slug}
               onClick={() => handleSelectSubcategory(s.slug)}
-              muted
-            />
-          ))}
-        </nav>
-      ) : null}
-
-      {sourceTags.length > 0 ? (
-        <nav className="flex gap-4 overflow-x-auto pb-1 pt-2 text-xs">
-          <NavButton
-            label="Toutes recherches"
-            active={selectedSource === null}
-            onClick={() => setSelectedSource(null)}
-            muted
-          />
-          {sourceTags.map((tag) => (
-            <NavButton
-              key={tag}
-              label={tag}
-              active={selectedSource === tag}
-              onClick={() => setSelectedSource(tag)}
               muted
             />
           ))}
