@@ -119,13 +119,13 @@ function CategoryGroup({
         <input
           type="text"
           name="name"
-          placeholder="Nom (ex : Handicap en entreprise)"
+          placeholder={`Nom (ex : ${category.name} — volet spécifique)`}
           className="font-body rounded-md border border-rule bg-card px-3 py-1.5 text-sm text-ink placeholder:text-ink-soft/60"
         />
         <textarea
           name="description"
           rows={2}
-          placeholder="Critère de pertinence (ex : emploi, aménagement de poste, inclusion professionnelle des personnes handicapées)"
+          placeholder={`Critère de pertinence (ex : quels sujets, faits ou contextes précis doivent apparaître dans un article ${category.name.toLowerCase()} pour appartenir à ce volet)`}
           className="font-body resize-none rounded-md border border-rule bg-card px-3 py-1.5 text-sm text-ink placeholder:text-ink-soft/60"
         />
         {state.error ? (
