@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { subcategories } from "@/db/schema";
+import { articles, subcategories } from "@/db/schema";
 
 export interface SubcategoryFormState {
   error?: string;
@@ -62,4 +62,12 @@ export async function toggleSubcategory(id: number, enabled: boolean): Promise<v
 export async function deleteSubcategory(id: number): Promise<void> {
   await db.delete(subcategories).where(eq(subcategories.id, id));
   revalidatePath("/settings");
+}
+
+export async function deleteArticlesBySubcategory(
+  subcategoryId: number
+): Promise<void> {
+  await db.delete(articles).where(eq(articles.subcategoryId, subcategoryId));
+  revalidatePath("/settings");
+  revalidatePath("/");
 }

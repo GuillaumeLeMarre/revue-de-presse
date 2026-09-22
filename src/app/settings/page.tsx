@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getCategoriesFull, getSubcategories } from "@/lib/articles-query";
 import { CategoryForm } from "@/components/CategoryForm";
-import { CategoryRow } from "@/components/CategoryRow";
-import { SubcategoryManager } from "@/components/SubcategoryManager";
+import { CategorySection } from "@/components/CategorySection";
 import { logout } from "@/lib/auth-actions";
 
 export const dynamic = "force-dynamic";
@@ -50,15 +49,19 @@ export default async function SettingsPage() {
               </p>
             ) : (
               categories.map((category) => (
-                <CategoryRow key={category.id} category={category} />
+                <CategorySection
+                  key={category.id}
+                  category={category}
+                  subcategories={subcategories.filter(
+                    (s) => s.categoryId === category.id
+                  )}
+                />
               ))
             )}
           </div>
 
           <CategoryForm />
         </section>
-
-        <SubcategoryManager categories={categories} subcategories={subcategories} />
       </div>
     </main>
   );
