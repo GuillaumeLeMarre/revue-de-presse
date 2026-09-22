@@ -1,6 +1,6 @@
 import { desc, eq, and, lt, gt, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { articles, categories, sources } from "@/db/schema";
+import { articles, categories, sources, subcategories } from "@/db/schema";
 
 const PAGE_SIZE = 20;
 
@@ -16,6 +16,8 @@ export interface ArticleCardData {
   publishedAt: Date | null;
   categoryName: string | null;
   categorySlug: string | null;
+  subcategoryName: string | null;
+  subcategorySlug: string | null;
   searchTag: string | null;
 }
 
@@ -31,6 +33,8 @@ const articleCardSelect = {
   publishedAt: articles.publishedAt,
   categoryName: categories.name,
   categorySlug: categories.slug,
+  subcategoryName: subcategories.name,
+  subcategorySlug: subcategories.slug,
   searchTag: sources.name,
 };
 
@@ -41,22 +45,39 @@ export async function getCategories() {
   });
 }
 
+export async function getSubcategories(categoryId?: number) {
+  return db.query.subcategories.findMany({
+    where: categoryId
+      ? and(eq(subcategories.enabled, true), eq(subcategories.categoryId, categoryId))
+      : eq(subcategories.enabled, true),
+    orderBy: (s) => s.sortOrder,
+  });
+}
+
+function baseQuery() {
+  return db
+    .select(articleCardSelect)
+    .from(articles)
+    .leftJoin(categories, eq(articles.categoryId, categories.id))
+    .leftJoin(subcategories, eq(articles.subcategoryId, subcategories.id))
+    .leftJoin(sources, eq(articles.sourceId, sources.id));
+}
+
 export async function getReadyArticles(options: {
   beforeId?: number;
   limit?: number;
   categorySlug?: string;
+  subcategorySlug?: string;
 } = {}): Promise<ArticleCardData[]> {
   const limit = options.limit ?? PAGE_SIZE;
 
   const conditions: SQL[] = [eq(articles.status, "ready")];
   if (options.beforeId) conditions.push(lt(articles.id, options.beforeId));
   if (options.categorySlug) conditions.push(eq(categories.slug, options.categorySlug));
+  if (options.subcategorySlug)
+    conditions.push(eq(subcategories.slug, options.subcategorySlug));
 
-  return db
-    .select(articleCardSelect)
-    .from(articles)
-    .leftJoin(categories, eq(articles.categoryId, categories.id))
-    .leftJoin(sources, eq(articles.sourceId, sources.id))
+  return baseQuery()
     .where(and(...conditions))
     .orderBy(desc(articles.id))
     .limit(limit);
@@ -64,16 +85,14 @@ export async function getReadyArticles(options: {
 
 export async function getNewerReadyArticles(
   afterId: number,
-  categorySlug?: string
+  categorySlug?: string,
+  subcategorySlug?: string
 ): Promise<ArticleCardData[]> {
   const conditions: SQL[] = [eq(articles.status, "ready"), gt(articles.id, afterId)];
   if (categorySlug) conditions.push(eq(categories.slug, categorySlug));
+  if (subcategorySlug) conditions.push(eq(subcategories.slug, subcategorySlug));
 
-  return db
-    .select(articleCardSelect)
-    .from(articles)
-    .leftJoin(categories, eq(articles.categoryId, categories.id))
-    .leftJoin(sources, eq(articles.sourceId, sources.id))
+  return baseQuery()
     .where(and(...conditions))
     .orderBy(desc(articles.id));
 }

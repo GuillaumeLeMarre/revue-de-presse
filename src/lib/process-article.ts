@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { articles, categories } from "@/db/schema";
+import { articles, categories, subcategories } from "@/db/schema";
 import { fetchPage } from "@/lib/fetch-page";
 import { extractArticle } from "@/lib/extract-article";
 import { categorizeByKeywords } from "@/lib/categorize";
@@ -102,15 +102,34 @@ async function summarizeAndCategorize(
   });
 
   try {
+    const categoryId = await resolveCategoryId(
+      article.categoryId,
+      article.title,
+      content,
+      null,
+      allCategories
+    );
+
+    const relevantSubcategories = categoryId
+      ? await db.query.subcategories.findMany({
+          where: eq(subcategories.categoryId, categoryId),
+        })
+      : [];
+    const activeSubcategories = relevantSubcategories.filter((s) => s.enabled);
+
     const result = await summarizeArticle({
       source: article.source ?? "Inconnu",
       title: article.title,
       date: article.publishedAt ? article.publishedAt.toISOString() : null,
       content,
       candidateCategories: allCategories.map((c) => c.name),
+      candidateSubcategories: activeSubcategories.map((s) => ({
+        name: s.name,
+        description: s.description,
+      })),
     });
 
-    const categoryId = await resolveCategoryId(
+    const finalCategoryId = await resolveCategoryId(
       article.categoryId,
       article.title,
       content,
@@ -118,18 +137,27 @@ async function summarizeAndCategorize(
       allCategories
     );
 
+    const subcategoryId = resolveSubcategoryId(
+      result.subcategory,
+      activeSubcategories
+    );
+
     await db
       .update(articles)
       .set({
         summary: result.summary,
-        categoryId,
-        status: "ready",
+        categoryId: finalCategoryId,
+        subcategoryId,
+        status: result.relevant ? "ready" : "irrelevant",
         summarizedAt: new Date(),
         updatedAt: new Date(),
       })
       .where(eq(articles.id, article.id));
 
-    logEvent("LLM_SUCCESS", { articleId: article.id });
+    logEvent("LLM_SUCCESS", {
+      articleId: article.id,
+      relevant: result.relevant,
+    });
   } catch (error) {
     logEvent("LLM_FAILED", {
       articleId: article.id,
@@ -163,6 +191,18 @@ async function resolveCategoryId(
   }
 
   return null;
+}
+
+function resolveSubcategoryId(
+  llmSubcategoryName: string | null,
+  candidates: Array<typeof subcategories.$inferSelect>
+): number | null {
+  if (!llmSubcategoryName) return null;
+  const normalized = llmSubcategoryName.trim().toLowerCase();
+  const match = candidates.find(
+    (s) => s.name.toLowerCase() === normalized || s.slug === normalized
+  );
+  return match ? match.id : null;
 }
 
 async function markFailed(articleId: number, reason: string): Promise<void> {

@@ -48,6 +48,14 @@ Puis, une seule fois, initialiser les catégories (§13) :
 npm run db:seed
 ```
 
+Pour ré-évaluer la pertinence et les sous-catégories des articles déjà en base (après ajout/modification de sous-catégories) :
+
+```
+DATABASE_URL=... LLM_API_KEY=... LLM_MODEL=... node scripts/reclassify.mjs
+```
+
+Manuel, à lancer via one-off command Coolify. Pas exécuté automatiquement au déploiement (rappelle le LLM, coût).
+
 ## 5. Collecte automatique (cron)
 
 L'application n'exécute pas elle-même de cron interne. Utiliser les **Scheduled Tasks** de Coolify pour appeler l'endpoint interne toutes les heures :

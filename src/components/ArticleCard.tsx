@@ -35,6 +35,7 @@ export function ArticleCard({ article }: { article: ArticleCardData }) {
               className="h-1.5 w-1.5 rounded-full"
             />
             {article.categoryName}
+            {article.subcategoryName ? ` · ${article.subcategoryName}` : ""}
           </span>
         ) : null}
 

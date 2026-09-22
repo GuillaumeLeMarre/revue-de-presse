@@ -26,21 +26,35 @@ export async function refreshFeed(): Promise<RefreshResult> {
 }
 
 export async function loadArticlesForCategory(
-  categorySlug: string | null
+  categorySlug: string | null,
+  subcategorySlug: string | null = null
 ): Promise<ArticleCardData[]> {
-  return getReadyArticles({ categorySlug: categorySlug ?? undefined });
+  return getReadyArticles({
+    categorySlug: categorySlug ?? undefined,
+    subcategorySlug: subcategorySlug ?? undefined,
+  });
 }
 
 export async function loadMoreArticles(
   beforeId: number,
-  categorySlug: string | null
+  categorySlug: string | null,
+  subcategorySlug: string | null = null
 ): Promise<ArticleCardData[]> {
-  return getReadyArticles({ beforeId, categorySlug: categorySlug ?? undefined });
+  return getReadyArticles({
+    beforeId,
+    categorySlug: categorySlug ?? undefined,
+    subcategorySlug: subcategorySlug ?? undefined,
+  });
 }
 
 export async function loadNewerArticles(
   afterId: number,
-  categorySlug: string | null
+  categorySlug: string | null,
+  subcategorySlug: string | null = null
 ): Promise<ArticleCardData[]> {
-  return getNewerReadyArticles(afterId, categorySlug ?? undefined);
+  return getNewerReadyArticles(
+    afterId,
+    categorySlug ?? undefined,
+    subcategorySlug ?? undefined
+  );
 }

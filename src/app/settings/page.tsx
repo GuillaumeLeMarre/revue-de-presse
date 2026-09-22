@@ -1,16 +1,18 @@
 import Link from "next/link";
-import { getCategories } from "@/lib/articles-query";
+import { getCategories, getSubcategories } from "@/lib/articles-query";
 import { getSources } from "@/lib/sources-query";
 import { SourceForm } from "@/components/SourceForm";
 import { SourceRow } from "@/components/SourceRow";
+import { SubcategoryManager } from "@/components/SubcategoryManager";
 import { logout } from "@/lib/auth-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const [categories, sources] = await Promise.all([
+  const [categories, sources, subcategories] = await Promise.all([
     getCategories(),
     getSources(),
+    getSubcategories(),
   ]);
 
   return (
@@ -57,6 +59,8 @@ export default async function SettingsPage() {
 
           <SourceForm categories={categories} />
         </section>
+
+        <SubcategoryManager categories={categories} subcategories={subcategories} />
       </div>
     </main>
   );

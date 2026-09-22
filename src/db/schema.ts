@@ -22,6 +22,24 @@ export const categories = pgTable("categories", {
     .defaultNow(),
 });
 
+export const subcategories = pgTable("subcategories", {
+  id: serial("id").primaryKey(),
+  categoryId: integer("category_id")
+    .notNull()
+    .references(() => categories.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 100 }).notNull(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(),
+  description: text("description").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  enabled: boolean("enabled").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const sourceTypeValues = ["google_news", "rss"] as const;
 export type SourceType = (typeof sourceTypeValues)[number];
 
@@ -51,6 +69,7 @@ export const articleStatusValues = [
   "summarizing",
   "ready",
   "failed",
+  "irrelevant",
 ] as const;
 export type ArticleStatus = (typeof articleStatusValues)[number];
 
@@ -70,6 +89,9 @@ export const articles = pgTable("articles", {
     length: 20,
   }).$type<SummarySource>(),
   categoryId: integer("category_id").references(() => categories.id),
+  subcategoryId: integer("subcategory_id").references(() => subcategories.id, {
+    onDelete: "set null",
+  }),
   sourceId: integer("source_id").references(() => sources.id, {
     onDelete: "set null",
   }),

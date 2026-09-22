@@ -18,6 +18,13 @@ interface Category {
   slug: string;
 }
 
+interface Subcategory {
+  id: number;
+  categoryId: number;
+  name: string;
+  slug: string;
+}
+
 interface Section {
   key: string;
   label: string;
@@ -34,12 +41,15 @@ const todayLabel = new Intl.DateTimeFormat("fr-FR", {
 export function RevueClient({
   initialArticles,
   categories,
+  subcategories,
 }: {
   initialArticles: ArticleCardData[];
   categories: Category[];
+  subcategories: Subcategory[];
 }) {
   const [articles, setArticles] = useState(initialArticles);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selectedSubSlug, setSelectedSubSlug] = useState<string | null>(null);
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
@@ -89,9 +99,20 @@ export function RevueClient({
   function handleSelectCategory(slug: string | null) {
     if (slug === selectedSlug) return;
     setSelectedSlug(slug);
+    setSelectedSubSlug(null);
     setSelectedSource(null);
     startSwitch(async () => {
-      const fresh = await loadArticlesForCategory(slug);
+      const fresh = await loadArticlesForCategory(slug, null);
+      setArticles(fresh);
+      setHasMore(fresh.length > 0);
+    });
+  }
+
+  function handleSelectSubcategory(slug: string | null) {
+    if (slug === selectedSubSlug) return;
+    setSelectedSubSlug(slug);
+    startSwitch(async () => {
+      const fresh = await loadArticlesForCategory(selectedSlug, slug);
       setArticles(fresh);
       setHasMore(fresh.length > 0);
     });
@@ -103,7 +124,11 @@ export function RevueClient({
       const result = await refreshFeed();
       setStatus(result.message);
       if (result.newArticles > 0) {
-        const fresh = await loadNewerArticles(articles[0]?.id ?? 0, selectedSlug);
+        const fresh = await loadNewerArticles(
+          articles[0]?.id ?? 0,
+          selectedSlug,
+          selectedSubSlug
+        );
         setArticles((prev) => {
           const existingIds = new Set(prev.map((a) => a.id));
           return [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];
@@ -116,11 +141,16 @@ export function RevueClient({
     const lastId = articles.at(-1)?.id;
     if (!lastId) return;
     startLoadMore(async () => {
-      const more = await loadMoreArticles(lastId, selectedSlug);
+      const more = await loadMoreArticles(lastId, selectedSlug, selectedSubSlug);
       setArticles((prev) => [...prev, ...more]);
       if (more.length === 0) setHasMore(false);
     });
   }
+
+  const currentCategory = categories.find((c) => c.slug === selectedSlug);
+  const visibleSubcategories = currentCategory
+    ? subcategories.filter((s) => s.categoryId === currentCategory.id)
+    : [];
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-8 sm:px-6">
@@ -183,6 +213,26 @@ export function RevueClient({
           />
         ))}
       </nav>
+
+      {visibleSubcategories.length > 0 ? (
+        <nav className="flex gap-4 overflow-x-auto pb-1 pt-2 text-xs">
+          <NavButton
+            label="Toutes sous-catégories"
+            active={selectedSubSlug === null}
+            onClick={() => handleSelectSubcategory(null)}
+            muted
+          />
+          {visibleSubcategories.map((s) => (
+            <NavButton
+              key={s.id}
+              label={s.name}
+              active={selectedSubSlug === s.slug}
+              onClick={() => handleSelectSubcategory(s.slug)}
+              muted
+            />
+          ))}
+        </nav>
+      ) : null}
 
       {sourceTags.length > 0 ? (
         <nav className="flex gap-4 overflow-x-auto pb-1 pt-2 text-xs">
