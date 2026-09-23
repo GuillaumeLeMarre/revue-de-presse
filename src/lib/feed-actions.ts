@@ -1,10 +1,13 @@
 "use server";
 
 import { runCollection } from "@/lib/collect";
+import { generateDailySummaries } from "@/lib/daily-summary";
 import {
   getReadyArticles,
   getNewerReadyArticles,
+  getTodayDailySummaries,
   type ArticleCardData,
+  type DailySummaryData,
 } from "@/lib/articles-query";
 
 export interface RefreshResult {
@@ -14,6 +17,15 @@ export interface RefreshResult {
 
 export async function refreshFeed(): Promise<RefreshResult> {
   const result = await runCollection();
+
+  if (result.newArticles > 0) {
+    try {
+      await generateDailySummaries();
+    } catch {
+      // Collection result stands even if summary generation fails.
+    }
+  }
+
   return {
     newArticles: result.newArticles,
     message:
@@ -23,6 +35,11 @@ export async function refreshFeed(): Promise<RefreshResult> {
           }`
         : "Aucun nouvel article",
   };
+}
+
+export async function loadDailySummaries(): Promise<DailySummaryData[]> {
+  const map = await getTodayDailySummaries();
+  return Array.from(map.values());
 }
 
 export async function loadArticlesForCategory(

@@ -8,6 +8,7 @@ import {
   loadArticlesForCategory,
   loadMoreArticles,
   loadNewerArticles,
+  loadDailySummaries,
 } from "@/lib/feed-actions";
 import { logout } from "@/lib/auth-actions";
 import type { ArticleCardData, DailySummaryData } from "@/lib/articles-query";
@@ -42,7 +43,7 @@ export function RevueClient({
   initialArticles,
   categories,
   subcategories,
-  dailySummaries,
+  dailySummaries: initialDailySummaries,
 }: {
   initialArticles: ArticleCardData[];
   categories: Category[];
@@ -50,6 +51,7 @@ export function RevueClient({
   dailySummaries: DailySummaryData[];
 }) {
   const [articles, setArticles] = useState(initialArticles);
+  const [dailySummaries, setDailySummaries] = useState(initialDailySummaries);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [selectedSubSlug, setSelectedSubSlug] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -119,6 +121,7 @@ export function RevueClient({
           const existingIds = new Set(prev.map((a) => a.id));
           return [...fresh.filter((a) => !existingIds.has(a.id)), ...prev];
         });
+        setDailySummaries(await loadDailySummaries());
       }
     });
   }
