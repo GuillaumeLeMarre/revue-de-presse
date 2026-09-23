@@ -1,0 +1,1 @@
+ALTER TABLE "daily_summaries" ADD COLUMN "global_facts" jsonb DEFAULT '[]'::jsonb NOT NULL;

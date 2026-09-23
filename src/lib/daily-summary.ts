@@ -7,31 +7,18 @@ const FACTUAL_RULES = `Contraintes strictes :
 - énonce uniquement des faits explicitement présents dans les articles fournis (qui, quoi, où, quand, chiffres) ;
 - n'interprète pas, ne déduis pas d'intention, de tendance, de portée ou de signification ;
 - n'utilise aucun terme d'analyse ou de jugement ("souligne", "illustre", "témoigne de", "marque une étape", "suscite des interrogations", "met en lumière", "reflète", "s'inscrit dans") ;
-- ne relie pas les faits entre eux par une interprétation commune ; juxtapose-les simplement ;
+- ne relie pas les faits entre eux par une interprétation commune ; un fait = une phrase indépendante ;
 - pas d'adjectifs ou adverbes évaluatifs ("important", "significatif", "inquiétant", "positif") ;
 - n'invente aucune information, utilise uniquement le contenu fourni.`;
 
-const CHAPTER_SYSTEM_PROMPT = `Tu rédiges un chapitre de la synthèse quotidienne d'une revue de presse.
+const FACTS_SYSTEM_PROMPT = `Tu extrais les faits marquants du jour à partir d'une liste d'articles numérotés.
 
-Tu reçois une liste d'articles du jour appartenant tous au même volet thématique.
-
-Rédige un court paragraphe factuel (3 à 6 lignes) qui rapporte les faits du jour pour ce volet, sans lister les articles un par un ni les nommer individuellement.
+Pour chaque fait retenu, rédige une phrase factuelle autonome (qui, quoi, où, quand) et indique le numéro de l'article dont il provient. Retiens entre 3 et 8 faits, les plus marquants, sans doublons. Ne cite pas le titre de l'article ni le nom du média.
 
 ${FACTUAL_RULES}
 
 Réponds uniquement avec un objet JSON de la forme :
-{"text": "..."}`;
-
-const GLOBAL_SYSTEM_PROMPT = `Tu rédiges le résumé global quotidien d'une catégorie de revue de presse.
-
-Tu reçois tous les articles du jour de cette catégorie, tous volets thématiques confondus.
-
-Rédige un court paragraphe factuel (3 à 6 lignes) qui rapporte les faits du jour pour cette catégorie, sans lister les articles un par un ni les nommer individuellement.
-
-${FACTUAL_RULES}
-
-Réponds uniquement avec un objet JSON de la forme :
-{"text": "..."}`;
+{"facts": [{"text": "...", "source": <numéro de l'article>}]}`;
 
 function todayParisDate(): string {
   const formatter = new Intl.DateTimeFormat("en-CA", {
@@ -51,16 +38,31 @@ function startOfTodayParis(): Date {
 interface ArticleForSummary {
   title: string;
   summary: string | null;
+  url: string | null;
 }
 
-async function callLlmForText(
-  systemPrompt: string,
-  userContent: string
-): Promise<string | null> {
+interface Fact {
+  text: string;
+  url: string | null;
+}
+
+async function extractFacts(
+  categoryName: string,
+  label: string | null,
+  items: ArticleForSummary[]
+): Promise<Fact[]> {
   const apiKey = process.env.LLM_API_KEY;
   const model = process.env.LLM_MODEL;
   const baseUrl = process.env.LLM_BASE_URL ?? "https://api.openai.com/v1";
-  if (!apiKey || !model) return null;
+  if (!apiKey || !model) return [];
+
+  const body = items
+    .map((a, i) => `${i + 1}. ${a.title}${a.summary ? ` — ${a.summary}` : ""}`)
+    .join("\n");
+
+  const context = label
+    ? `CATÉGORIE\n${categoryName}\n\nVOLET\n${label}\n\nARTICLES\n${body}`
+    : `CATÉGORIE\n${categoryName}\n\nARTICLES\n${body}`;
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
@@ -71,11 +73,11 @@ async function callLlmForText(
     body: JSON.stringify({
       model,
       messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userContent },
+        { role: "system", content: FACTS_SYSTEM_PROMPT },
+        { role: "user", content: context },
       ],
       response_format: { type: "json_object" },
-      temperature: 0.3,
+      temperature: 0.2,
     }),
   });
 
@@ -83,41 +85,26 @@ async function callLlmForText(
 
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content;
-  if (typeof content !== "string") return null;
+  if (typeof content !== "string") return [];
 
   try {
     const parsed = JSON.parse(content);
-    return typeof parsed.text === "string" ? parsed.text.trim() : null;
+    if (!Array.isArray(parsed.facts)) return [];
+    return parsed.facts
+      .filter(
+        (f: unknown): f is { text: string; source: number } =>
+          typeof f === "object" &&
+          f !== null &&
+          typeof (f as { text?: unknown }).text === "string" &&
+          typeof (f as { source?: unknown }).source === "number"
+      )
+      .map((f: { text: string; source: number }) => {
+        const article = items[f.source - 1];
+        return { text: f.text.trim(), url: article?.url ?? null };
+      });
   } catch {
-    return null;
+    return [];
   }
-}
-
-function formatArticleList(items: ArticleForSummary[]): string {
-  return items
-    .map((a, i) => `${i + 1}. ${a.title}${a.summary ? ` — ${a.summary}` : ""}`)
-    .join("\n");
-}
-
-async function summarizeGroup(
-  categoryName: string,
-  label: string,
-  items: ArticleForSummary[]
-): Promise<string | null> {
-  return callLlmForText(
-    CHAPTER_SYSTEM_PROMPT,
-    `CATÉGORIE\n${categoryName}\n\nVOLET\n${label}\n\nARTICLES\n${formatArticleList(items)}`
-  );
-}
-
-async function summarizeGlobal(
-  categoryName: string,
-  items: ArticleForSummary[]
-): Promise<string | null> {
-  return callLlmForText(
-    GLOBAL_SYSTEM_PROMPT,
-    `CATÉGORIE\n${categoryName}\n\nARTICLES\n${formatArticleList(items)}`
-  );
 }
 
 export async function generateDailySummaries(): Promise<void> {
@@ -135,6 +122,8 @@ export async function generateDailySummaries(): Promise<void> {
           .select({
             title: articles.title,
             summary: articles.summary,
+            originalUrl: articles.originalUrl,
+            feedUrl: articles.feedUrl,
             subcategoryName: subcategories.name,
           })
           .from(articles)
@@ -157,31 +146,36 @@ export async function generateDailySummaries(): Promise<void> {
 
       if (rows.length === 0) continue;
 
+      const toArticle = (r: (typeof rows)[number]): ArticleForSummary => ({
+        title: r.title,
+        summary: r.summary,
+        url: r.originalUrl ?? r.feedUrl,
+      });
+
       const groups = new Map<string, ArticleForSummary[]>();
       for (const row of rows) {
         if (!row.subcategoryName) continue;
         if (!groups.has(row.subcategoryName)) groups.set(row.subcategoryName, []);
-        groups
-          .get(row.subcategoryName)!
-          .push({ title: row.title, summary: row.summary });
+        groups.get(row.subcategoryName)!.push(toArticle(row));
       }
 
       const orderedLabels = categorySubcategories
         .map((s) => s.name)
         .filter((name) => groups.has(name));
 
-      const chapters: Array<{ label: string; text: string }> = [];
+      const chapters: Array<{ label: string; facts: Fact[] }> = [];
       for (const label of orderedLabels) {
-        const text = await summarizeGroup(category.name, label, groups.get(label)!);
-        if (text) chapters.push({ label, text });
+        const facts = await extractFacts(category.name, label, groups.get(label)!);
+        if (facts.length > 0) chapters.push({ label, facts });
       }
 
-      const globalSummary = await summarizeGlobal(
+      const globalFacts = await extractFacts(
         category.name,
-        rows.map((r) => ({ title: r.title, summary: r.summary }))
+        null,
+        rows.map(toArticle)
       );
 
-      if (chapters.length === 0 && !globalSummary) continue;
+      if (chapters.length === 0 && globalFacts.length === 0) continue;
 
       await db
         .insert(dailySummaries)
@@ -189,14 +183,14 @@ export async function generateDailySummaries(): Promise<void> {
           categoryId: category.id,
           date,
           articleCount: rows.length,
-          globalSummary: globalSummary ?? "",
+          globalFacts,
           chapters,
         })
         .onConflictDoUpdate({
           target: [dailySummaries.categoryId, dailySummaries.date],
           set: {
             articleCount: rows.length,
-            globalSummary: globalSummary ?? "",
+            globalFacts,
             chapters,
             generatedAt: new Date(),
           },

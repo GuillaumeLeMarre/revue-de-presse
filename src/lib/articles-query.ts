@@ -6,6 +6,7 @@ import {
   subcategories,
   dailySummaries,
   type DailySummaryChapter,
+  type DailySummaryFact,
 } from "@/db/schema";
 
 const PAGE_SIZE = 20;
@@ -96,7 +97,7 @@ export interface DailySummaryData {
   categoryId: number;
   date: string;
   articleCount: number;
-  globalSummary: string;
+  globalFacts: DailySummaryFact[];
   chapters: DailySummaryChapter[];
   generatedAt: Date;
 }
@@ -118,7 +119,7 @@ export async function getTodayDailySummaries(): Promise<
       categoryId: dailySummaries.categoryId,
       date: dailySummaries.date,
       articleCount: dailySummaries.articleCount,
-      globalSummary: dailySummaries.globalSummary,
+      globalFacts: dailySummaries.globalFacts,
       chapters: dailySummaries.chapters,
       generatedAt: dailySummaries.generatedAt,
     })

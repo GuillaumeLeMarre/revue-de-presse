@@ -250,7 +250,7 @@ export function RevueClient({
             Résumé du jour
           </h2>
 
-          {categories.every((c) => !summaryBySlug.get(c.slug)?.globalSummary) ? (
+          {categories.every((c) => !summaryBySlug.get(c.slug)?.globalFacts.length) ? (
             <p className="font-body py-16 text-center text-sm text-ink-soft">
               Aucun résumé disponible pour le moment.
             </p>
@@ -258,15 +258,33 @@ export function RevueClient({
             <div className="mt-3 flex flex-col gap-4 rounded-lg border border-rule bg-card p-4">
               {categories.map((c) => {
                 const summary = summaryBySlug.get(c.slug);
-                if (!summary || !summary.globalSummary) return null;
+                if (!summary || summary.globalFacts.length === 0) return null;
                 return (
-                  <div key={c.slug} className="flex flex-col gap-1">
+                  <div key={c.slug} className="flex flex-col gap-1.5">
                     <span className="font-display text-sm text-accent">
                       {c.name}
                     </span>
-                    <p className="font-body text-sm leading-relaxed text-ink-soft">
-                      {summary.globalSummary}
-                    </p>
+                    <ul className="flex flex-col gap-1">
+                      {summary.globalFacts.map((fact, i) => (
+                        <li
+                          key={i}
+                          className="font-body text-sm leading-relaxed text-ink-soft"
+                        >
+                          {fact.url ? (
+                            <a
+                              href={fact.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:text-accent hover:underline"
+                            >
+                              {fact.text}
+                            </a>
+                          ) : (
+                            fact.text
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                     <button
                       type="button"
                       onClick={() => handleSelectCategory(c.slug)}
@@ -305,13 +323,31 @@ export function RevueClient({
               {summary && visibleChapters.length > 0 ? (
                 <div className="mt-3 flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
                   {visibleChapters.map((chapter) => (
-                    <div key={chapter.label} className="flex flex-col gap-1">
+                    <div key={chapter.label} className="flex flex-col gap-1.5">
                       <span className="font-display text-sm text-accent">
                         {chapter.label}
                       </span>
-                      <p className="font-body text-sm leading-relaxed text-ink-soft">
-                        {chapter.text}
-                      </p>
+                      <ul className="flex flex-col gap-1">
+                        {chapter.facts.map((fact, i) => (
+                          <li
+                            key={i}
+                            className="font-body text-sm leading-relaxed text-ink-soft"
+                          >
+                            {fact.url ? (
+                              <a
+                                href={fact.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-accent hover:underline"
+                              >
+                                {fact.text}
+                              </a>
+                            ) : (
+                              fact.text
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   ))}
                   <span className="font-body text-xs text-ink-soft/70">

@@ -1,0 +1,1 @@
+ALTER TABLE "daily_summaries" DROP COLUMN "global_summary";

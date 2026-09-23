@@ -52,9 +52,14 @@ export const subcategories = pgTable("subcategories", {
     .defaultNow(),
 });
 
+export interface DailySummaryFact {
+  text: string;
+  url: string | null;
+}
+
 export interface DailySummaryChapter {
   label: string;
-  text: string;
+  facts: DailySummaryFact[];
 }
 
 export const dailySummaries = pgTable(
@@ -66,7 +71,7 @@ export const dailySummaries = pgTable(
       .references(() => categories.id, { onDelete: "cascade" }),
     date: date("date").notNull(),
     articleCount: integer("article_count").notNull().default(0),
-    globalSummary: text("global_summary").notNull().default(""),
+    globalFacts: jsonb("global_facts").$type<DailySummaryFact[]>().notNull().default([]),
     chapters: jsonb("chapters").$type<DailySummaryChapter[]>().notNull(),
     generatedAt: timestamp("generated_at", { withTimezone: true })
       .notNull()
