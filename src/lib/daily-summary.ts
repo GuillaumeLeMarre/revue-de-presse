@@ -3,12 +3,21 @@ import { db } from "@/db";
 import { articles, categories, dailySummaries, subcategories } from "@/db/schema";
 import { logEvent } from "@/lib/logger";
 
+const FACTUAL_RULES = `Contraintes strictes :
+- énonce uniquement des faits explicitement présents dans les articles fournis (qui, quoi, où, quand, chiffres) ;
+- n'interprète pas, ne déduis pas d'intention, de tendance, de portée ou de signification ;
+- n'utilise aucun terme d'analyse ou de jugement ("souligne", "illustre", "témoigne de", "marque une étape", "suscite des interrogations", "met en lumière", "reflète", "s'inscrit dans") ;
+- ne relie pas les faits entre eux par une interprétation commune ; juxtapose-les simplement ;
+- pas d'adjectifs ou adverbes évaluatifs ("important", "significatif", "inquiétant", "positif") ;
+- n'invente aucune information, utilise uniquement le contenu fourni.`;
+
 const CHAPTER_SYSTEM_PROMPT = `Tu rédiges un chapitre de la synthèse quotidienne d'une revue de presse.
 
 Tu reçois une liste d'articles du jour appartenant tous au même volet thématique.
 
-Rédige un court paragraphe de synthèse (3 à 6 lignes) qui dégage les faits marquants du jour pour ce volet, sans lister les articles un par un ni les nommer individuellement.
-N'invente aucune information, utilise uniquement le contenu fourni.
+Rédige un court paragraphe factuel (3 à 6 lignes) qui rapporte les faits du jour pour ce volet, sans lister les articles un par un ni les nommer individuellement.
+
+${FACTUAL_RULES}
 
 Réponds uniquement avec un objet JSON de la forme :
 {"text": "..."}`;
@@ -17,8 +26,9 @@ const GLOBAL_SYSTEM_PROMPT = `Tu rédiges le résumé global quotidien d'une cat
 
 Tu reçois tous les articles du jour de cette catégorie, tous volets thématiques confondus.
 
-Rédige un court paragraphe (3 à 6 lignes) qui donne une vue d'ensemble des faits marquants du jour pour cette catégorie, sans lister les articles un par un ni les nommer individuellement.
-N'invente aucune information, utilise uniquement le contenu fourni.
+Rédige un court paragraphe factuel (3 à 6 lignes) qui rapporte les faits du jour pour cette catégorie, sans lister les articles un par un ni les nommer individuellement.
+
+${FACTUAL_RULES}
 
 Réponds uniquement avec un objet JSON de la forme :
 {"text": "..."}`;
