@@ -1,6 +1,12 @@
 import { desc, eq, and, lt, gt, type SQL } from "drizzle-orm";
 import { db } from "@/db";
-import { articles, categories, subcategories } from "@/db/schema";
+import {
+  articles,
+  categories,
+  subcategories,
+  dailySummaries,
+  type DailySummaryChapter,
+} from "@/db/schema";
 
 const PAGE_SIZE = 20;
 
@@ -84,6 +90,42 @@ export async function getReadyArticles(options: {
     .where(and(...conditions))
     .orderBy(desc(articles.id))
     .limit(limit);
+}
+
+export interface DailySummaryData {
+  categoryId: number;
+  date: string;
+  articleCount: number;
+  chapters: DailySummaryChapter[];
+}
+
+function todayParisDate(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+export async function getTodayDailySummaries(): Promise<
+  Map<number, DailySummaryData>
+> {
+  const rows = await db
+    .select({
+      categoryId: dailySummaries.categoryId,
+      date: dailySummaries.date,
+      articleCount: dailySummaries.articleCount,
+      chapters: dailySummaries.chapters,
+    })
+    .from(dailySummaries)
+    .where(eq(dailySummaries.date, todayParisDate()));
+
+  const map = new Map<number, DailySummaryData>();
+  for (const row of rows) {
+    map.set(row.categoryId, row);
+  }
+  return map;
 }
 
 export async function getNewerReadyArticles(

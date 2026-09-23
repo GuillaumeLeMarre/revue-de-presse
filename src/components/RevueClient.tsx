@@ -10,7 +10,7 @@ import {
   loadNewerArticles,
 } from "@/lib/feed-actions";
 import { logout } from "@/lib/auth-actions";
-import type { ArticleCardData } from "@/lib/articles-query";
+import type { ArticleCardData, DailySummaryData } from "@/lib/articles-query";
 
 interface Category {
   id: number;
@@ -42,10 +42,12 @@ export function RevueClient({
   initialArticles,
   categories,
   subcategories,
+  dailySummaries,
 }: {
   initialArticles: ArticleCardData[];
   categories: Category[];
   subcategories: Subcategory[];
+  dailySummaries: DailySummaryData[];
 }) {
   const [articles, setArticles] = useState(initialArticles);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
@@ -135,6 +137,12 @@ export function RevueClient({
   const visibleSubcategories = currentCategory
     ? subcategories.filter((s) => s.categoryId === currentCategory.id)
     : [];
+
+  const summaryBySlug = new Map<string, DailySummaryData>();
+  for (const s of dailySummaries) {
+    const c = categories.find((cat) => cat.id === s.categoryId);
+    if (c) summaryBySlug.set(c.slug, s);
+  }
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-8 sm:px-6">
@@ -227,18 +235,37 @@ export function RevueClient({
           Aucun article pour le moment.
         </p>
       ) : (
-        sections.map((section) => (
-          <section key={section.key} className="pt-8">
-            <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
-              {section.label}
-            </h2>
-            <div className="mt-4 columns-1 gap-4 sm:columns-2 lg:columns-3">
-              {section.items.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        ))
+        sections.map((section) => {
+          const summary = summaryBySlug.get(section.key);
+          return (
+            <section key={section.key} className="pt-8">
+              <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
+                {section.label}
+              </h2>
+
+              {summary ? (
+                <div className="mt-3 flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
+                  {summary.chapters.map((chapter) => (
+                    <div key={chapter.label} className="flex flex-col gap-1">
+                      <span className="font-display text-sm text-accent">
+                        {chapter.label}
+                      </span>
+                      <p className="font-body text-sm leading-relaxed text-ink-soft">
+                        {chapter.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="mt-4 columns-1 gap-4 sm:columns-2 lg:columns-3">
+                {section.items.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            </section>
+          );
+        })
       )}
 
       {hasMore && !isSwitching ? (

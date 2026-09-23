@@ -6,6 +6,9 @@ import {
   integer,
   boolean,
   timestamp,
+  date,
+  jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 
 export const sourceTypeValues = ["google_news", "rss"] as const;
@@ -48,6 +51,28 @@ export const subcategories = pgTable("subcategories", {
     .notNull()
     .defaultNow(),
 });
+
+export interface DailySummaryChapter {
+  label: string;
+  text: string;
+}
+
+export const dailySummaries = pgTable(
+  "daily_summaries",
+  {
+    id: serial("id").primaryKey(),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categories.id, { onDelete: "cascade" }),
+    date: date("date").notNull(),
+    articleCount: integer("article_count").notNull().default(0),
+    chapters: jsonb("chapters").$type<DailySummaryChapter[]>().notNull(),
+    generatedAt: timestamp("generated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [unique().on(table.categoryId, table.date)]
+);
 
 export const articleStatusValues = [
   "discovered",

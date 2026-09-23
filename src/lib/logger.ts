@@ -8,7 +8,9 @@ export type LogEventType =
   | "ARTICLE_EXTRACTION_SUCCESS"
   | "ARTICLE_EXTRACTION_FAILED"
   | "LLM_SUCCESS"
-  | "LLM_FAILED";
+  | "LLM_FAILED"
+  | "DAILY_SUMMARY_SUCCESS"
+  | "DAILY_SUMMARY_FAILED";
 
 export function logEvent(
   type: LogEventType,
