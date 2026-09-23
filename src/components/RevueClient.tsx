@@ -39,6 +39,17 @@ const todayLabel = new Intl.DateTimeFormat("fr-FR", {
   timeZone: "Europe/Paris",
 }).format(new Date());
 
+function formatGeneratedAt(date: Date): string {
+  return new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Paris",
+  }).format(new Date(date));
+}
+
 export function RevueClient({
   initialArticles,
   categories,
@@ -258,6 +269,9 @@ export function RevueClient({
                       </p>
                     </div>
                   ))}
+                  <span className="font-body text-xs text-ink-soft/70">
+                    Généré le {formatGeneratedAt(summary.generatedAt)}
+                  </span>
                 </div>
               ) : null}
 

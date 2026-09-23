@@ -97,6 +97,7 @@ export interface DailySummaryData {
   date: string;
   articleCount: number;
   chapters: DailySummaryChapter[];
+  generatedAt: Date;
 }
 
 function todayParisDate(): string {
@@ -117,6 +118,7 @@ export async function getTodayDailySummaries(): Promise<
       date: dailySummaries.date,
       articleCount: dailySummaries.articleCount,
       chapters: dailySummaries.chapters,
+      generatedAt: dailySummaries.generatedAt,
     })
     .from(dailySummaries)
     .where(eq(dailySummaries.date, todayParisDate()));
