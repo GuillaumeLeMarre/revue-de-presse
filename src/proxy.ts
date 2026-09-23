@@ -43,5 +43,5 @@ function redirectToLogin(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api/cron).*)"],
+  matcher: ["/((?!api/cron|api/digest).*)"],
 };
