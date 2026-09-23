@@ -12,7 +12,7 @@ export function ArticleCard({ article }: { article: ArticleCardData }) {
       target="_blank"
       rel="noopener noreferrer"
       style={{ borderLeftColor: color }}
-      className="group mb-4 block break-inside-avoid overflow-hidden rounded-tl-2xl rounded-tr-2xl rounded-br-md rounded-bl-md border-l-[3px] bg-card shadow-none transition-shadow duration-200 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.18)]"
+      className="group mb-4 block break-inside-avoid overflow-hidden rounded-tl-2xl rounded-tr-2xl rounded-br-md rounded-bl-md border border-l-[3px] border-rule bg-card transition-colors duration-200 hover:border-accent/60"
     >
       {article.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
