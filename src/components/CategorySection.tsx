@@ -60,16 +60,16 @@ export function CategorySection({
 
   return (
     <div className="flex flex-col gap-3 border-b border-rule py-5">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
         <span className="font-display text-base text-ink">{category.name}</span>
-        <div className="font-body flex items-center gap-3 text-xs">
+        <div className="font-body flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
           <button
             type="button"
             disabled={isPending}
             onClick={() =>
               startTransition(() => toggleCategory(category.id, !category.enabled))
             }
-            className="text-ink-soft hover:text-ink disabled:opacity-50"
+            className="py-1 text-ink-soft hover:text-ink disabled:opacity-50"
           >
             {category.enabled ? "active" : "inactive"}
           </button>
@@ -85,7 +85,7 @@ export function CategorySection({
                 startTransition(() => deleteArticlesByCategory(category.id));
               }
             }}
-            className="text-ink-soft hover:text-ink disabled:opacity-50"
+            className="py-1 text-ink-soft hover:text-ink disabled:opacity-50"
           >
             Vider les articles
           </button>
@@ -97,7 +97,7 @@ export function CategorySection({
                 startTransition(() => deleteCategory(category.id));
               }
             }}
-            className="text-accent-alert hover:underline disabled:opacity-50"
+            className="py-1 text-accent-alert hover:underline disabled:opacity-50"
           >
             Supprimer
           </button>
@@ -124,7 +124,7 @@ export function CategorySection({
           subcategories.map((s) => (
             <div
               key={s.id}
-              className="flex items-start justify-between gap-3 rounded-md bg-card px-3 py-2"
+              className="flex flex-col gap-2 rounded-md bg-card px-3 py-2 sm:flex-row sm:items-start sm:justify-between"
             >
               <div className="flex flex-col gap-0.5">
                 <span className="font-body text-sm font-medium text-ink">
@@ -134,14 +134,14 @@ export function CategorySection({
                   {s.description}
                 </span>
               </div>
-              <div className="font-body flex shrink-0 items-center gap-3 text-xs">
+              <div className="font-body flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
                 <button
                   type="button"
                   disabled={isPending}
                   onClick={() =>
                     startTransition(() => toggleSubcategory(s.id, !s.enabled))
                   }
-                  className="text-ink-soft hover:text-ink disabled:opacity-50"
+                  className="py-1 text-ink-soft hover:text-ink disabled:opacity-50"
                 >
                   {s.enabled ? "active" : "inactive"}
                 </button>
@@ -157,7 +157,7 @@ export function CategorySection({
                       startTransition(() => deleteArticlesBySubcategory(s.id));
                     }
                   }}
-                  className="text-ink-soft hover:text-ink disabled:opacity-50"
+                  className="py-1 text-ink-soft hover:text-ink disabled:opacity-50"
                 >
                   Vider
                 </button>
@@ -169,7 +169,7 @@ export function CategorySection({
                       startTransition(() => deleteSubcategory(s.id));
                     }
                   }}
-                  className="text-accent-alert hover:underline disabled:opacity-50"
+                  className="py-1 text-accent-alert hover:underline disabled:opacity-50"
                 >
                   Supprimer
                 </button>
