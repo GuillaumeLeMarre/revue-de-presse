@@ -158,6 +158,10 @@ export function RevueClient({
     if (c) summaryBySlug.set(c.slug, s);
   }
 
+  const selectedSubcategoryName = selectedSubSlug
+    ? subcategories.find((s) => s.slug === selectedSubSlug)?.name ?? null
+    : null;
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col px-4 pb-16 pt-8 sm:px-6">
       <header className="flex flex-col gap-4 border-b border-rule pb-5">
@@ -251,15 +255,20 @@ export function RevueClient({
       ) : (
         sections.map((section) => {
           const summary = summaryBySlug.get(section.key);
+          const visibleChapters = summary
+            ? selectedSubcategoryName
+              ? summary.chapters.filter((c) => c.label === selectedSubcategoryName)
+              : summary.chapters
+            : [];
           return (
             <section key={section.key} className="pt-8">
               <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
                 {section.label}
               </h2>
 
-              {summary ? (
+              {summary && visibleChapters.length > 0 ? (
                 <div className="mt-3 flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
-                  {summary.chapters.map((chapter) => (
+                  {visibleChapters.map((chapter) => (
                     <div key={chapter.label} className="flex flex-col gap-1">
                       <span className="font-display text-sm text-accent">
                         {chapter.label}
