@@ -255,18 +255,38 @@ export function RevueClient({
       ) : (
         sections.map((section) => {
           const summary = summaryBySlug.get(section.key);
-          const visibleChapters = summary
-            ? selectedSubcategoryName
-              ? summary.chapters.filter((c) => c.label === selectedSubcategoryName)
-              : summary.chapters
-            : [];
+          const isAllView = selectedSlug === null;
+          const visibleChapters =
+            summary && !isAllView
+              ? selectedSubcategoryName
+                ? summary.chapters.filter((c) => c.label === selectedSubcategoryName)
+                : summary.chapters
+              : [];
           return (
             <section key={section.key} className="pt-8">
               <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
                 {section.label}
               </h2>
 
-              {summary && visibleChapters.length > 0 ? (
+              {isAllView && summary && summary.globalSummary ? (
+                <div className="mt-3 flex flex-col gap-2 rounded-lg border border-rule bg-card p-4">
+                  <span className="font-display text-sm text-accent">
+                    Résumé global
+                  </span>
+                  <p className="font-body text-sm leading-relaxed text-ink-soft">
+                    {summary.globalSummary}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectCategory(section.key)}
+                    className="font-body self-start text-xs font-medium text-accent hover:underline"
+                  >
+                    En savoir plus sur {section.label}
+                  </button>
+                </div>
+              ) : null}
+
+              {!isAllView && summary && visibleChapters.length > 0 ? (
                 <div className="mt-3 flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
                   {visibleChapters.map((chapter) => (
                     <div key={chapter.label} className="flex flex-col gap-1">

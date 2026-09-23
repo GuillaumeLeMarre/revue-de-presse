@@ -96,6 +96,7 @@ export interface DailySummaryData {
   categoryId: number;
   date: string;
   articleCount: number;
+  globalSummary: string;
   chapters: DailySummaryChapter[];
   generatedAt: Date;
 }
@@ -117,6 +118,7 @@ export async function getTodayDailySummaries(): Promise<
       categoryId: dailySummaries.categoryId,
       date: dailySummaries.date,
       articleCount: dailySummaries.articleCount,
+      globalSummary: dailySummaries.globalSummary,
       chapters: dailySummaries.chapters,
       generatedAt: dailySummaries.generatedAt,
     })

@@ -66,6 +66,7 @@ export const dailySummaries = pgTable(
       .references(() => categories.id, { onDelete: "cascade" }),
     date: date("date").notNull(),
     articleCount: integer("article_count").notNull().default(0),
+    globalSummary: text("global_summary").notNull().default(""),
     chapters: jsonb("chapters").$type<DailySummaryChapter[]>().notNull(),
     generatedAt: timestamp("generated_at", { withTimezone: true })
       .notNull()

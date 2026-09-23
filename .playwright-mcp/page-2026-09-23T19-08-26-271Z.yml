@@ -1,0 +1,217 @@
+- generic [active] [ref=f6e1]:
+  - main [ref=f6e2]:
+    - generic [ref=f6e3]:
+      - generic [ref=f6e4]:
+        - generic [ref=f6e5]:
+          - generic [ref=f6e6]:
+            - heading "Ma Revue de Presse" [level=1] [ref=f6e7]
+            - paragraph [ref=f6e8]: mercredi 23 septembre
+          - generic [ref=f6e9]:
+            - link "Paramètres" [ref=f6e10] [cursor=pointer]:
+              - /url: /settings
+              - text: Réglages
+            - button "Quitter" [ref=f6e12]
+        - generic [ref=f6e13]:
+          - generic [ref=f6e14]: Actualisation en cours…
+          - button "Actualisation…" [disabled] [ref=f6e218]
+      - navigation [ref=f6e16]:
+        - button "Tous" [ref=f6e17]
+        - button "IA" [ref=f6e18]
+        - button "Tech" [ref=f6e19]
+        - button "Télécom" [ref=f6e20]
+        - button "Économie" [ref=f6e21]
+        - button "France" [ref=f6e22]
+        - button "International" [ref=f6e23]
+        - button "Handicap" [ref=f6e24]
+      - generic [ref=f6e25]:
+        - heading "IA" [level=2] [ref=f6e26]
+        - generic [ref=f6e27]:
+          - generic [ref=f6e28]:
+            - generic [ref=f6e29]: IA en entreprise
+            - paragraph [ref=f6e30]: Aujourd'hui, plusieurs initiatives et développements autour de l'intelligence artificielle en entreprise ont été mis en avant. Des entreprises comme Anthropic et OpenAI continuent de rivaliser avec de nouveaux modèles, tandis que des géants comme Meta et Amazon investissent dans des technologies d'IA pour améliorer leurs services. Parallèlement, des préoccupations émergent concernant l'impact de l'IA sur l'emploi, avec des discussions sur la nécessité d'une régulation et d'une intégration responsable de ces technologies dans divers secteurs, notamment la santé et le retail.
+          - generic [ref=f6e31]:
+            - generic [ref=f6e32]: Général
+            - paragraph [ref=f6e33]: Les débats autour de l'intelligence artificielle continuent de s'intensifier, notamment en ce qui concerne son utilisation dans la littérature et les implications éthiques qui en découlent. La polémique autour de l'écrivain Thélyson Orélien, accusé d'avoir utilisé l'IA pour son roman, soulève des questions sur la valeur des œuvres produites avec cette technologie. Par ailleurs, des discussions au niveau international, comme celles au Conseil de sécurité de l'ONU et lors du G20, mettent en lumière les enjeux de régulation et de sécurité liés à l'IA, alors que des inquiétudes sur la désinformation générée par l'IA se multiplient à l'approche des élections.
+          - generic [ref=f6e34]: Généré le mercredi 23 septembre à 21:00
+        - generic [ref=f6e35]:
+          - link [ref=f6e36] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMinAFBVV95cUxPeVJEY2gwU2Q4WHFFTGFxcHNkLV9Xb2R4Wk1HcHNKWXdhN1VuWTY1UjJLem1hZVJTUHNEcmg0d1FTTWVtT3Z1TXNrSTI4elhRdzFOTlR5MmxFNUxlWnVtTDlUNHNZRU1jY1h0dXJXVFdKUmFNaXR6bjcwZzc0T05ueG93bFd3MjZ2STlCaUJoZFNndC1STUlQckptYWs?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e37]:
+              - generic [ref=f6e38]: IA
+              - 'heading "Affaire Thélyson Orélien : une œuvre a-t-elle moins de valeur si elle est écrite avec l''intelligence artificielle - Vanity Fair" [level=2] [ref=f6e40]'
+              - paragraph [ref=f6e41]: L'article aborde la question de la valeur d'une œuvre écrite avec l'intelligence artificielle, en se concentrant sur l'affaire Thélyson Orélien. Il interroge si l'utilisation de l'IA pour créer des œuvres impacte leur valeur perçue.
+              - paragraph [ref=f6e42]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e43]: Vanity Fair · il y a 59 min
+          - link [ref=f6e44] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMi8wFBVV95cUxQNjcwWnBoWFctNEZaYk1xMks1WVVwZmZJUDhhZF9aSmctMEU3SVRRZlhRckRpQ1JENndFX015VlRQdGlNSElaWXM5bzNkNGQ2TmlWaXIzUGJIeUg5eW9qWWQzcnZWbzJTdUROMC14S3BqREpmbUEzajFmcWQ5SzRkRGlRSFNwZ3VUS1pOYXBTaE0xRlFnRlFOdHplNUNseDl6dHhRNE9wTm5uV1M2ZlRYY3ZHSV9uZlVQUUl5X0I0bVEtV0E3UXFZcHhKY1I1MGY1ZFRwWl9zVVVlb09BZXFqeGdOaUFpUENSU21SRmItN3FXNGc?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e45]:
+              - generic [ref=f6e46]: IA
+              - 'heading "L’écrivain Thélyson Orélien accusé d’avoir utilisé l’IA : les vraies questions que pose l’affaire (Video) - L''Humanité" [level=2] [ref=f6e48]'
+              - paragraph [ref=f6e49]: L'écrivain Thélyson Orélien est accusé d'avoir utilisé l'intelligence artificielle, soulevant des questions importantes sur l'usage de cette technologie dans le domaine littéraire.
+              - paragraph [ref=f6e50]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e51]: L'Humanité · il y a 1 h
+          - link [ref=f6e52] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMikAFBVV95cUxNa2tGLXphX3FwS1dQZFdVRGVDTF9QTGpOUFZpRWZPMDVTTThFMTFuemtXOWZvYlVSaWU0dDhNRmRGVjRaOFR0TzI3TDEtWG96Z1VobFNULWF3NzNRdTdGakJkM2M1TnJBQnIzOEhreDFNZExfQldncXFmcEI1djZ3X1ZEUDRiUDFfZ0tCaGdZbE8?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e53]:
+              - generic [ref=f6e54]: IA · IA en entreprise
+              - 'heading "Découverte par intelligence artificielle (IA) : vos produits ressortent-ils dans les bons assistants - Info-Ecommerce" [level=2] [ref=f6e56]'
+              - paragraph [ref=f6e57]: L'article aborde la question de la visibilité des produits sur les assistants virtuels grâce à l'intelligence artificielle (IA).
+              - paragraph [ref=f6e58]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e59]: Info-Ecommerce · il y a 7 h
+          - link [ref=f6e60] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMi8gFBVV95cUxQVno3STZVd0x0RmlJNmRqUnF6V2xhdGdGYmtSRWNNSmVfQ0hIb2VLbmRIU2xsWTYxRW9jOVMyX0tYTjVMZXZjcmVEX09LOGFaQlBNb0tiTFoxNkFwSGZ2V3RLaFgzOVhDSUhKUTdXZndqVG1NclE5VzBBZHkybC1xSE5SVTFnT0ozckVFbnlQQi1uMWpDeGVqd1RoQmY5QVpKLXo0SzNWNm9ZWVlndHdyZ2cwNjZDQlZ3R0h3VFN4MmxTakhjcDN4VHVvWlBmMF9SUkJRX3ZYMWREQ1ZPZmlTTUJjc1dSSDNGTTVwTk9fOE9sdw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e61]:
+              - generic [ref=f6e62]: IA
+              - heading "Après la polémique Orélien, « on pourrait revenir au manuscrit » imagine Maxime Chattam - Le HuffPost" [level=2] [ref=f6e64]
+              - paragraph [ref=f6e65]: Maxime Chattam évoque la possibilité de revenir au manuscrit après la polémique autour d'Orélien.
+              - paragraph [ref=f6e66]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e67]: Le HuffPost · il y a 2 h
+          - link [ref=f6e68] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMizgFBVV95cUxOYWJmYy1ESHQtb1owOUNsdHhqRlJFUF9VWUJYQ21yamNHR1dSQVpDMHFkMjRSNDJnMGFRc3FTWHozMlFVRnU1TGdMODlUMmM5UXhiM25QOEZ2ampJOWhESnRJOEZoWVpRQXcyQ1FNYzNWUmVjcHNuZXhCdzZNanFCY3RxaXRJSkc2a2p0a2dhMDhqZkhjNkhRcnFiaUVzUzJWSEw3dTZ1NmJqaXRWUWNJWV9pZl90bEZOd2dxQ2ZWZlBKMHNYd1VzbmM4YjBXQQ?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e69]:
+              - generic [ref=f6e70]: IA
+              - 'heading "IA et littérature : le logiciel Pangram est-il vraiment fiable ? - Libération" [level=2] [ref=f6e72]'
+              - paragraph [ref=f6e73]: L'article examine la fiabilité du logiciel Pangram dans le domaine de l'intelligence artificielle et de la littérature.
+              - paragraph [ref=f6e74]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e75]: Libération · il y a 48 min
+          - link [ref=f6e76] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMivwFBVV95cUxQdzg0a2hMZ2VQWHhJSjgwdnNURTlDbl9QdzFfWjRmY1BlWTJoR0czdnlRY0JDdV9zb3lkV0NnOWpMN2huLTZvTTB3QmY3cmZKb1R3U21NYUJmRVI2b0JmOGFMM3NQdWI3R1AzTF9wTG9Fd2ZvdVN5bWJQNTd1UU42MkJTSXl1UV9GVk5FQjhOSWVqYmN2NUw5SGN4VElTWFBwa01xRGZHMjZRLW9weWM5WXFDa3A0aFdCMXNkTzF1bw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e77]:
+              - generic [ref=f6e78]: IA
+              - 'heading "IA : Sommes-nous en train de perdre le contrôle ? - Église catholique en France" [level=2] [ref=f6e80]'
+              - paragraph [ref=f6e81]: L'article aborde la question de la perte de contrôle face à l'intelligence artificielle (IA) dans le contexte de l'Église catholique en France.
+              - paragraph [ref=f6e82]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e83]: Église catholique en France · il y a 4 h
+          - link [ref=f6e84] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMitAFBVV95cUxPQXlHWEYzNm1paFdLZnh1OHRXMHlqT0pBSWJMdjh1cmtNUjhZVW5DQnpZT1JsX09NNHFzZG04SFZ4ZHVrZFVUQ25yaklibFJERnZPaXM2MFE1SFBzdVByeEFvYmdZZURoOVNVdkdZcEZaSnV2RVBjQ0ZWNk9sSHpMWDNVRGYzUnh2VW1UenJSQU93aUxHekVHVS1QRTB5U1ktMlppbFdvUm53XzlUSGI2NHRjN2Y?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e85]:
+              - generic [ref=f6e86]: IA
+              - 'heading "Intelligence artificielle : de quoi faut-il vraiment avoir peur ? - Valeurs actuelles" [level=2] [ref=f6e88]'
+              - paragraph [ref=f6e89]: L'article aborde les craintes liées à l'intelligence artificielle, en questionnant les véritables enjeux et dangers associés à cette technologie.
+              - paragraph [ref=f6e90]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e91]: Valeurs actuelles · il y a 1 h
+          - link [ref=f6e92] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMitwFBVV95cUxPSGdyLVpQMHA0bFZ2YVlZSG5zZ1pQdUxUSkNFWW9iNjV3QXFOcFdCX2x1RFkwWTJ5QVRRS2dZYVhUS1kyY1VqaHk1bXhZa2o4VlFZNUtTNFVtSGZLdXdNRHlOSEtpTFpxLVhHWmFyVWlCSVV4Uy1XLThsb3lRUjh3cHhCTjYwY0sxb2g1anpUV2k1VUZHWEpZdGFleDU3andEYnMwY29hWjBjWTN1NGU1akRsYmktcnM?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e93]:
+              - generic [ref=f6e94]: IA · Recherche & modèles
+              - heading "L'intelligence artificielle peut découvrir des signes avant-coureurs du cancer du pancréas, affirme une étude - Radio France" [level=2] [ref=f6e96]
+              - paragraph [ref=f6e97]: Une étude affirme que l'intelligence artificielle peut détecter des signes avant-coureurs du cancer du pancréas.
+              - paragraph [ref=f6e98]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e99]: Radio France · il y a 13 h
+          - link [ref=f6e100] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMiygFBVV95cUxNMUhOTlhodUJ4NVY3b1Y2ZzlxUDF1WTB1RldYX0xhRjI3U0hERzBKenJDVnA4cllMemtMZ3VaVWlybG1ULUpxLUlXUW53VzMyMkFSWkxsN1VIWmJfeno2MzZ6WUM3cENkanFZWmlRR2lJRFBBb19wN0JTaWU0N2lIN1BkLUsxTWVaODlZWXFpcFhWMXpxMU9scDYzcUZKY2dWQXZiamoxbzZYLWxkNjMxTjdGRHVPWXpMSjNHcW1vUW51LUVZaEFSNnJB0gHPAUFVX3lxTE8tZk9HN2ZJb0tiSFZVMlVtc0FKUW1LbVFsS0dWVnphbWNZUnRYdF9JbjlPZ2hKOXg0ODBiTW9ETTUwdlpBVl9sZE9peDNMVEVhNTRjdEI4VGRsaks2cmNtZjloMG1KR0RzNWNMSGNhUEVHV0lPX2JhR3VwX3d0eHlFSWRTTlpMYlZhUENGU3pEVnlwMUR4Q3YwblNwcjhCdWxhdjJFT1dKcTFJYlhSM3U5WHJVVnVjeUlLT1VoaXdFWWpaaXVnei0taGZjSFlpbw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e101]:
+              - generic [ref=f6e102]: IA
+              - 'heading "Intelligence artificielle: arrêter avant qu''il ne soit trop tard - Slate.fr" [level=2] [ref=f6e104]'
+              - paragraph [ref=f6e105]: L'article aborde la nécessité de réguler l'intelligence artificielle avant qu'il ne soit trop tard, soulignant les risques associés à son développement incontrôlé.
+              - paragraph [ref=f6e106]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e107]: Slate.fr · il y a 1 h
+          - link [ref=f6e108] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMiqgFBVV95cUxPY09IQkd5OVFDTzNoTEdxTFBlTG5mNXBzR0ZFSXhtaXpJR1ByQTBDRHdmbFZKMDQ5YUFxS2RKbzV3SEI5Z29NWW1WbGZ2TlJwY2U5czZ6dU1Jek1WQm93dExDSXBjMUQ4QVRtRkFoXzFNaXdBMF9tWWhFWnMxZ2h3VVpGVWFKNTZLQUE1eURMTHR2YmludmNUYTV0cTQydktNSkphbTBrZExjUQ?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e109]:
+              - generic [ref=f6e110]: IA
+              - heading "Qui a intérêt à réguler l’intelligence artificielle ? - Mediapart" [level=2] [ref=f6e112]
+              - paragraph [ref=f6e113]: L'article de Mediapart aborde la question de la régulation de l'intelligence artificielle, en s'interrogeant sur les intérêts en jeu concernant cette régulation.
+              - paragraph [ref=f6e114]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e115]: Mediapart · il y a 33 min
+          - link [ref=f6e116] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMilgFBVV95cUxQT29oU3R5V095aXRJSXZuVVV6V0U0bXlGUDVZekJDdTUxakxiVld2SWhTX016V282YXcxc09JT3JzOVNtT1BoZldVaEJmVGEwMkEtcjNvUDhCVTJzeXhGNjdMNUY5TUMtQjBhR3pWMUpPdUstdHY3dnFjd3dRRlFwaFhqNHhsZG84Zk0zNVFhZDQ3R1UxMFE?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e117]:
+              - generic [ref=f6e118]: IA
+              - heading "Mo Gawdat, visionnaire et expert mondial en IA, sera la tête d'affiche du Bahrain Fintech Forward 2026 - Yahoo Finance France" [level=2] [ref=f6e120]
+              - paragraph [ref=f6e121]: Mo Gawdat, visionnaire et expert mondial en IA, sera la tête d'affiche du Bahrain Fintech Forward 2026.
+              - paragraph [ref=f6e122]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e123]: Yahoo Finance France · il y a 1 h
+          - link [ref=f6e124] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMi0wFBVV95cUxQaV9ZMXQxSXZvM3JtX3R0ekV2WHhTSHdXZTluV0RsSjMwbE5uTWZvQjR5SXZtREllckUwT2otLWhYUUdLclA5RE81Q0dnUnBmT3BVcnp2SzA4RWpOVjY2d0FBbWxXZkpIa3pWSGRwVW5kU3hBSXVzN2JxMF9kWUtHS21FTG9UaHJic05CNkZSaWdKTU42ekdXbG10YVNBY1VQZGJXRFZ4NktVTTFqdG00ODY4Ri1yQVNQbmtrYmFhOUhaLVgwNGRhc2E5dl80Z2NZcldn?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e125]:
+              - generic [ref=f6e126]: IA · IA en entreprise
+              - 'heading "Autorégulation de l’IA : le plan des patrons de la tech pour garder les mains libres - L''Humanité" [level=2] [ref=f6e128]'
+              - paragraph [ref=f6e129]: Les dirigeants du secteur technologique proposent un plan d'autorégulation de l'intelligence artificielle pour maintenir leur autonomie. Cette initiative vise à encadrer le développement et l'utilisation de l'IA tout en évitant une régulation trop stricte.
+              - paragraph [ref=f6e130]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e131]: L'Humanité · il y a 1 h
+          - link [ref=f6e132] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMiwgFBVV95cUxPTGhRQTkyUDZ3Yms3NE8xY0NvRnNrQ09uSHhJbHZnNnBDQ0JhTTNmTU5ONGxPMHdOc0F4Vmx3TV9DdlF2YXc4VEc2WTJzUmFDVmlGQ0F3LWhKOWdvNk5QcGJMcDdFQkdkYkJoYU1sX2M0NTZpa1Y3c1ZxM0lzd2lZemk1azdtMjNUQ0ZCSWxKcDNvR29ZYjA4Y21UNFhlVUVJM3FMQ2hPQjhZMmVjbzZrS3F1Z3AzVDNDUFRHQW9ieDNYdw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e133]:
+              - generic [ref=f6e134]: IA · IA en entreprise
+              - heading "YouTube permet désormais de personnaliser son fil vidéo grâce à un chatbot - noovo.info" [level=2] [ref=f6e136]
+              - paragraph [ref=f6e137]: YouTube a introduit une nouvelle fonctionnalité permettant aux utilisateurs de personnaliser leur fil vidéo à l'aide d'un chatbot.
+              - paragraph [ref=f6e138]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e139]: noovo.info · il y a 1 h
+          - link [ref=f6e140] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMimwFBVV95cUxObzdhY05qZ2hkdlhtY2J0WHE1OE9KQXBNbWhkMjlleVdWYlNSWEpvbEdYZzNWQ0oyVklPeEFqTEFqWU1OOEtNNXk1R3lRS3MxN1BiRXdfUEt1bm80WWdIYVQ2TlBsYlZrcjJJQ2czcXkxSDRmaGJKbzlVdWFEMGg4eW55THJlYXBZM3RkTlpSRFJIaVVUY256TUhudw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e141]:
+              - generic [ref=f6e142]: IA · IA en entreprise
+              - 'heading "Polémique Thélyson Orélien chez Grasset : Qu’est-ce que le logiciel Pangram et est-il vraiment efficace - fr.news.yahoo.com" [level=2] [ref=f6e144]'
+              - paragraph [ref=f6e145]: L'article aborde la polémique autour de Thélyson Orélien chez Grasset, en se concentrant sur le logiciel Pangram et son efficacité. Il examine les critiques et les débats suscités par cet outil.
+              - paragraph [ref=f6e146]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e147]: fr.news.yahoo.com · il y a 7 h
+          - link [ref=f6e148] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMiggJBVV95cUxNN090eGl0bnJaVlJaWV9ic1hhY19vd0ZoN0NBTFI3ZTVyQ0ROdEpWUTlSZjBJVUYzcWN6SWYwRjNTSkg0LXFFa2I1NDdiODFVeDN2X0N4cU5HZzdvakpDYnFhaTJpT0pMWkVHUkNsQ3RLLXNfV0x1NGNBNG5IeXJPUHFaNGktS2Q3ZURlM09xamVBNXVsdzQzazlkdE9DVTFFcjE1SjJYN0ZjR3pzQmk2VFBiU2RvdVZ5ZGNPbnhyVFRReUh3ODBMV0c2X2NCRjRXbTZrUTZjWUViZmhNcWdoaGNQNjhLRF90eWpqWEpZY0NvWlBNalRndU5VTHYweE1JT3c?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e149]:
+              - generic [ref=f6e150]: IA · IA en entreprise
+              - heading "Avec la polémique Thélyson Orélien, la question de l’IA bouscule l’édition - Ouest-France" [level=2] [ref=f6e152]
+              - paragraph [ref=f6e153]: La polémique autour de Thélyson Orélien soulève des questions sur l'impact de l'intelligence artificielle dans le secteur de l'édition.
+              - paragraph [ref=f6e154]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e155]: Ouest-France · il y a 2 h
+          - link [ref=f6e156] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMitAJBVV95cUxNc21IV1hkUDBWZUE0Q3pSa1lhU252VEExdVMxa1lXYWdxb29JZF9qZm53eVREM1hOVjBiY2hVYmFkbDBtYnUtQlFFV3hzTVUxbXVia2gxTE8yMjlwQlNUMmxoZ0FmcHVzR2dxZzUwWVNLTlhpZlFOREQyWGk1TVZzbl9sSHVrMFV0ZG9CRWE2NDZhd1pBUmotWTFWNFktM3gxNTViblpMbWs2S2hoaVB0bFRVQ0dIZ25VLWhPdjRGV1Zqc0NXT1d1YzBkRHhVVVNyZklhd09Wckt2MUlnMzNocU1vZ3VWal9RbEJvcF9FVEhvY18zUmM1TDZkOUZFcGdmd055a1RpbHlwRlVRckxZQmtnRkUyOHlPS3Z3LWs0UnV5VTY2UUFGRm9TNC1YYkdOa1BJWA?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e157]:
+              - generic [ref=f6e158]: IA
+              - 'heading "Anthropic sort Claude Opus 5.5, OpenAI réplique avec GPT-6 Sol et Luna : la bataille de l’IA est loin d’être finie - L''Usine Digitale" [level=2] [ref=f6e160]'
+              - paragraph [ref=f6e161]: Anthropic a lancé Claude Opus 5.5, tandis qu'OpenAI a répondu avec GPT-6 Sol et Luna, marquant une nouvelle étape dans la compétition dans le domaine de l'intelligence artificielle.
+              - paragraph [ref=f6e162]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e163]: L'Usine Digitale · il y a 3 h
+          - link [ref=f6e164] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMisAJBVV95cUxOWGJudzRWcDdMV0JFZVZOSHI1NEFRUHFkdmFXTlVCY0d4U2djb2Z3NmpfRzZjLXFZUHo0Q25VeDVEWWdGTGZuNHpMSEJ6WE1Wa0ZUeHVJbUJocy1vam8yTjlWeE5fMGpId0Ywa2EyM2FTc0lZQS0yeDgxd0JOTkhRbW13bkk0Vmp1enBESkg4TGk5NVU4QTQ3cDZ6a01XZFl5cnFoTWxmNWktcHRwbkFCcy1MZkRWRWh2Z0hYZXNON0JHQUZkcU96WGxFcHlJWXFhdWlkUHk3OXRDNzhjWHZSczhnUmdWX21fc2RTcGJSTWpPWTNyZjhSTnNhQWJRVEJlN1ZmLW1fVlF0M2g2NWV5NnM3eU1EWUNUbEUxX3VVQ3RMMVB2Q1Z6UWhvSllLNVQ1?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e165]:
+              - generic [ref=f6e166]: IA · IA en entreprise
+              - heading "Le ministre du Travail lance son plan \"Impulsion IA\" - Banque des Territoires" [level=2] [ref=f6e168]
+              - paragraph [ref=f6e169]: Le ministre du Travail a lancé le plan 'Impulsion IA' le 23 septembre 2026.
+              - paragraph [ref=f6e170]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e171]: Banque des Territoires · il y a 6 h
+          - link [ref=f6e172] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMi4AFBVV95cUxOQTIzSlRadGt5SklQQ0JjZWZNSm1aNXNLOU9STlhCcVNsWHRsM181NllKbEJ3Y1BuTEwzT1NfVFNCbzBVMkwyWWl1SktGUW5PMkdvRkJhLUtuLUdHdDNfcmxUVUkwcWxqRXp3bUVjdmxYTjc3ZFlnTU1xdU91aEVuQ3pUU19JdUNKdGVoRHNhdnZ4WURvb3RZOFBQNmFDQ0xtWjJsZnhQUmd5LUpQczB1eW5KTDctczA5bEFIQkJaYlBtbnFUZ2xYdzE4c05VZ0d5TXlNM25MRWZEcmZTSWVxUA?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e173]:
+              - generic [ref=f6e174]: IA · IA en entreprise
+              - heading "YouTube permet désormais de personnaliser son fil vidéo grâce à un chatbot - France 24" [level=2] [ref=f6e176]
+              - paragraph [ref=f6e177]: YouTube a introduit une nouvelle fonctionnalité permettant aux utilisateurs de personnaliser leur fil vidéo à l'aide d'un chatbot.
+              - paragraph [ref=f6e178]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e179]: France 24 · il y a 1 h
+          - link [ref=f6e180] [cursor=pointer]:
+            - /url: https://news.google.com/rss/articles/CBMiggJBVV95cUxNSnZjTzRpRHNvZnEwYVR6NFVvdWxRd21sZ0hadGpUQ3c0NzQ0T3VteF9UZ2ZacmcyY3RZZEtPMC1Pdkdrb0dNVThTUXdHbG11d2VDWDUwZ0E3NTNhWFlSaXJyRl9KU0dENmxaX0tpYTZ5TWRHRGMtdnZIVEJkQ2VVRC1YcmpraGxBcVJkMGVMZllIRG0tU0V2MVRGMHZWV2dHRkt2b2NzQk9kX05UdzZlaklzbFo3Z0RyM3kwSlVWVkpMQW5tTG03cGE2OTR2ZGpHZEJJbmhIOC1vV0VBRnRuRjF3dnJoY0YyV3dVSUtBa1JibW81WG5RSWJzVzY5ZnBONEE?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+            - generic [ref=f6e181]:
+              - generic [ref=f6e182]: IA · IA en entreprise
+              - heading "Intelligence artificielle, \"coopétition\" ou santé mentale des dirigeants au cœur des rencontres économiques de la CCI Hérault - Midi Libre" [level=2] [ref=f6e184]
+              - paragraph [ref=f6e185]: Les rencontres économiques de la CCI Hérault se concentrent sur des thèmes tels que l'intelligence artificielle, la coopétition et la santé mentale des dirigeants.
+              - paragraph [ref=f6e186]: Résumé basé sur l'extrait disponible
+              - paragraph [ref=f6e187]: Midi Libre · il y a 2 h
+      - generic [ref=f6e188]:
+        - heading "Handicap" [level=2] [ref=f6e189]
+        - generic [ref=f6e190]:
+          - generic [ref=f6e191]:
+            - generic [ref=f6e192]: Législation
+            - paragraph [ref=f6e193]: La journée a été marquée par plusieurs avancées législatives concernant le handicap. La France a récemment mis en place une réforme sur les fauteuils roulants, soulignant qu'elle rattrape son retard dans ce domaine. Par ailleurs, des discussions autour de l'inclusion des personnes handicapées dans la fonction publique et des questions de responsabilité suite à un incendie dans un gîte accueillant des personnes handicapées ont également été mises en lumière.
+          - generic [ref=f6e194]:
+            - generic [ref=f6e195]: Handicap à l'école
+            - paragraph [ref=f6e196]: Des initiatives éducatives continuent de se développer pour sensibiliser les jeunes au handicap. À la bibliothèque de Vedène, la lecture est utilisée comme un outil de sensibilisation, tandis qu'une enquête du SNALC met en avant les enjeux de la prise en compte du handicap dans l'Éducation Nationale.
+          - generic [ref=f6e197]:
+            - generic [ref=f6e198]: Handicap en entreprise
+            - paragraph [ref=f6e199]: Le secteur de l'emploi pour les personnes en situation de handicap montre des signes positifs, avec des témoignages d'employés épanouis dans des environnements inclusifs. Un restaurant à Niort illustre comment l'intégration professionnelle peut transformer la vie d'une jeune femme atteinte de handicap mental.
+          - generic [ref=f6e200]:
+            - generic [ref=f6e201]: Sport
+            - paragraph [ref=f6e202]: Le sport continue de jouer un rôle crucial dans l'inclusion des personnes en situation de handicap. Des événements tels qu'un tournoi de football adapté et des randonnées en montagne sont organisés pour promouvoir l'accessibilité et le bien-être. Des témoignages d'athlètes, comme celui d'Édith Dassé, soulignent l'impact positif du sport sur la vie des personnes handicapées.
+          - generic [ref=f6e203]:
+            - generic [ref=f6e204]: Général
+            - paragraph [ref=f6e205]: Divers événements et initiatives ont été rapportés, illustrant les défis et les avancées concernant le handicap. Des actions de sensibilisation, comme le déploiement du drapeau des Fiertés Handies à Paris, ainsi que des témoignages sur la précarité croissante des personnes handicapées, montrent la nécessité d'une attention continue à leurs besoins. De plus, des projets communautaires, tels que des gîtes en Bretagne pour personnes handicapées, témoignent d'une volonté d'inclusion.
+          - generic [ref=f6e206]: Généré le mercredi 23 septembre à 21:00
+        - link [ref=f6e208] [cursor=pointer]:
+          - /url: https://news.google.com/rss/articles/CBMikAJBVV95cUxQWlhIQjhSREhJdjBONE9LNzRaLXNpUkxLbGlQLWU2Y0J6NUZ5X3JnWUpoanNOdGN6cVJmLXRza0pOQjItYnRTTG43dnFZLXVVemZmc3FDclB5aEZOWnpBb0o1VUhRSFpQRHhIVS05VmllM1RZazg5ZE9UV1pPNFR0X29HMVhHc3l1RmMtaUZ3Y2d2Vm8tMTVlazJDa2tWSDZHYVFwbWNDSWI0UUVwbXRxcG5aUUZQUnVJVHhUZGhaX0Z5UHBOelhIM1pPOS1sR1hyYnoxT2gtcXItUzZIMldwUVRra05sS1BqZDhybVR4RXRrQjhHeDFfY1B6di1jbHREYkIyUC1yY21zcmE2MDdDRw?oc=5&ucbcb=1&hl=en-US&gl=US&ceid=US:en
+          - generic [ref=f6e209]:
+            - generic [ref=f6e210]: Handicap · Sport
+            - 'heading "\"Quand je suis en l’air, tout va bien\" : le rêve de voler devient réalité pour ces personnes handicapées à Issoudun - lanouvellerepublique.fr" [level=2] [ref=f6e212]'
+            - paragraph [ref=f6e213]: À Issoudun, des personnes handicapées réalisent leur rêve de voler, illustrant l'impact positif de cette expérience sur leur bien-être. L'événement met en avant l'accessibilité de l'aviation pour tous.
+            - paragraph [ref=f6e214]: Résumé basé sur l'extrait disponible
+            - paragraph [ref=f6e215]: lanouvellerepublique.fr · il y a 6 h
+      - button "Charger plus d'articles" [ref=f6e216]
+  - alert [ref=f6e217]

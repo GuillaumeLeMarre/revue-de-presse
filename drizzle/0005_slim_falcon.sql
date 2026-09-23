@@ -1,0 +1,1 @@
+ALTER TABLE "daily_summaries" ADD COLUMN "global_summary" text DEFAULT '' NOT NULL;

@@ -3,11 +3,21 @@ import { db } from "@/db";
 import { articles, categories, dailySummaries, subcategories } from "@/db/schema";
 import { logEvent } from "@/lib/logger";
 
-const SYSTEM_PROMPT = `Tu rédiges un chapitre de la synthèse quotidienne d'une revue de presse.
+const CHAPTER_SYSTEM_PROMPT = `Tu rédiges un chapitre de la synthèse quotidienne d'une revue de presse.
 
 Tu reçois une liste d'articles du jour appartenant tous au même volet thématique.
 
 Rédige un court paragraphe de synthèse (3 à 6 lignes) qui dégage les faits marquants du jour pour ce volet, sans lister les articles un par un ni les nommer individuellement.
+N'invente aucune information, utilise uniquement le contenu fourni.
+
+Réponds uniquement avec un objet JSON de la forme :
+{"text": "..."}`;
+
+const GLOBAL_SYSTEM_PROMPT = `Tu rédiges le résumé global quotidien d'une catégorie de revue de presse.
+
+Tu reçois tous les articles du jour de cette catégorie, tous volets thématiques confondus.
+
+Rédige un court paragraphe (3 à 6 lignes) qui donne une vue d'ensemble des faits marquants du jour pour cette catégorie, sans lister les articles un par un ni les nommer individuellement.
 N'invente aucune information, utilise uniquement le contenu fourni.
 
 Réponds uniquement avec un objet JSON de la forme :
@@ -33,19 +43,14 @@ interface ArticleForSummary {
   summary: string | null;
 }
 
-async function summarizeGroup(
-  categoryName: string,
-  label: string,
-  items: ArticleForSummary[]
+async function callLlmForText(
+  systemPrompt: string,
+  userContent: string
 ): Promise<string | null> {
   const apiKey = process.env.LLM_API_KEY;
   const model = process.env.LLM_MODEL;
   const baseUrl = process.env.LLM_BASE_URL ?? "https://api.openai.com/v1";
   if (!apiKey || !model) return null;
-
-  const body = items
-    .map((a, i) => `${i + 1}. ${a.title}${a.summary ? ` — ${a.summary}` : ""}`)
-    .join("\n");
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
@@ -56,11 +61,8 @@ async function summarizeGroup(
     body: JSON.stringify({
       model,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: `CATÉGORIE\n${categoryName}\n\nVOLET\n${label}\n\nARTICLES\n${body}`,
-        },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userContent },
       ],
       response_format: { type: "json_object" },
       temperature: 0.3,
@@ -79,6 +81,33 @@ async function summarizeGroup(
   } catch {
     return null;
   }
+}
+
+function formatArticleList(items: ArticleForSummary[]): string {
+  return items
+    .map((a, i) => `${i + 1}. ${a.title}${a.summary ? ` — ${a.summary}` : ""}`)
+    .join("\n");
+}
+
+async function summarizeGroup(
+  categoryName: string,
+  label: string,
+  items: ArticleForSummary[]
+): Promise<string | null> {
+  return callLlmForText(
+    CHAPTER_SYSTEM_PROMPT,
+    `CATÉGORIE\n${categoryName}\n\nVOLET\n${label}\n\nARTICLES\n${formatArticleList(items)}`
+  );
+}
+
+async function summarizeGlobal(
+  categoryName: string,
+  items: ArticleForSummary[]
+): Promise<string | null> {
+  return callLlmForText(
+    GLOBAL_SYSTEM_PROMPT,
+    `CATÉGORIE\n${categoryName}\n\nARTICLES\n${formatArticleList(items)}`
+  );
 }
 
 export async function generateDailySummaries(): Promise<void> {
@@ -120,15 +149,16 @@ export async function generateDailySummaries(): Promise<void> {
 
       const groups = new Map<string, ArticleForSummary[]>();
       for (const row of rows) {
-        const label = row.subcategoryName ?? "Général";
-        if (!groups.has(label)) groups.set(label, []);
-        groups.get(label)!.push({ title: row.title, summary: row.summary });
+        if (!row.subcategoryName) continue;
+        if (!groups.has(row.subcategoryName)) groups.set(row.subcategoryName, []);
+        groups
+          .get(row.subcategoryName)!
+          .push({ title: row.title, summary: row.summary });
       }
 
-      const orderedLabels = [
-        ...categorySubcategories.map((s) => s.name).filter((name) => groups.has(name)),
-        ...(groups.has("Général") ? ["Général"] : []),
-      ];
+      const orderedLabels = categorySubcategories
+        .map((s) => s.name)
+        .filter((name) => groups.has(name));
 
       const chapters: Array<{ label: string; text: string }> = [];
       for (const label of orderedLabels) {
@@ -136,7 +166,12 @@ export async function generateDailySummaries(): Promise<void> {
         if (text) chapters.push({ label, text });
       }
 
-      if (chapters.length === 0) continue;
+      const globalSummary = await summarizeGlobal(
+        category.name,
+        rows.map((r) => ({ title: r.title, summary: r.summary }))
+      );
+
+      if (chapters.length === 0 && !globalSummary) continue;
 
       await db
         .insert(dailySummaries)
@@ -144,12 +179,14 @@ export async function generateDailySummaries(): Promise<void> {
           categoryId: category.id,
           date,
           articleCount: rows.length,
+          globalSummary: globalSummary ?? "",
           chapters,
         })
         .onConflictDoUpdate({
           target: [dailySummaries.categoryId, dailySummaries.date],
           set: {
             articleCount: rows.length,
+            globalSummary: globalSummary ?? "",
             chapters,
             generatedAt: new Date(),
           },
