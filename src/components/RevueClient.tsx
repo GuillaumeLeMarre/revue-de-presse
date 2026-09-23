@@ -244,7 +244,43 @@ export function RevueClient({
         </nav>
       ) : null}
 
-      {isSwitching ? (
+      {selectedSlug === null ? (
+        <section className="pt-8">
+          <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
+            Résumé du jour
+          </h2>
+
+          {categories.every((c) => !summaryBySlug.get(c.slug)?.globalSummary) ? (
+            <p className="font-body py-16 text-center text-sm text-ink-soft">
+              Aucun résumé disponible pour le moment.
+            </p>
+          ) : (
+            <div className="mt-3 flex flex-col gap-4 rounded-lg border border-rule bg-card p-4">
+              {categories.map((c) => {
+                const summary = summaryBySlug.get(c.slug);
+                if (!summary || !summary.globalSummary) return null;
+                return (
+                  <div key={c.slug} className="flex flex-col gap-1">
+                    <span className="font-display text-sm text-accent">
+                      {c.name}
+                    </span>
+                    <p className="font-body text-sm leading-relaxed text-ink-soft">
+                      {summary.globalSummary}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectCategory(c.slug)}
+                      className="font-body self-start text-xs font-medium text-accent hover:underline"
+                    >
+                      En savoir plus sur {c.name}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      ) : isSwitching ? (
         <p className="font-body py-16 text-center text-sm text-ink-soft">
           Chargement…
         </p>
@@ -255,38 +291,18 @@ export function RevueClient({
       ) : (
         sections.map((section) => {
           const summary = summaryBySlug.get(section.key);
-          const isAllView = selectedSlug === null;
-          const visibleChapters =
-            summary && !isAllView
-              ? selectedSubcategoryName
-                ? summary.chapters.filter((c) => c.label === selectedSubcategoryName)
-                : summary.chapters
-              : [];
+          const visibleChapters = summary
+            ? selectedSubcategoryName
+              ? summary.chapters.filter((c) => c.label === selectedSubcategoryName)
+              : summary.chapters
+            : [];
           return (
             <section key={section.key} className="pt-8">
               <h2 className="font-display text-sm font-medium uppercase tracking-wide text-ink-soft">
                 {section.label}
               </h2>
 
-              {isAllView && summary && summary.globalSummary ? (
-                <div className="mt-3 flex flex-col gap-2 rounded-lg border border-rule bg-card p-4">
-                  <span className="font-display text-sm text-accent">
-                    Résumé global
-                  </span>
-                  <p className="font-body text-sm leading-relaxed text-ink-soft">
-                    {summary.globalSummary}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectCategory(section.key)}
-                    className="font-body self-start text-xs font-medium text-accent hover:underline"
-                  >
-                    En savoir plus sur {section.label}
-                  </button>
-                </div>
-              ) : null}
-
-              {!isAllView && summary && visibleChapters.length > 0 ? (
+              {summary && visibleChapters.length > 0 ? (
                 <div className="mt-3 flex flex-col gap-3 rounded-lg border border-rule bg-card p-4">
                   {visibleChapters.map((chapter) => (
                     <div key={chapter.label} className="flex flex-col gap-1">
@@ -314,7 +330,7 @@ export function RevueClient({
         })
       )}
 
-      {hasMore && !isSwitching ? (
+      {selectedSlug !== null && hasMore && !isSwitching ? (
         <button
           type="button"
           onClick={handleLoadMore}
